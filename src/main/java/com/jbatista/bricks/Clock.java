@@ -1,8 +1,10 @@
 package com.jbatista.bricks;
 
 import com.jbatista.bricks.components.Module;
+import com.jbatista.bricks.components.Patch;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,11 +16,13 @@ public class Clock {
     private static TimerTask TIMER_TASK = new TickTask();
 
     static int MODULES_SIZE = 0;
-    static final LinkedList<Module> MODULES = new LinkedList<>();
+    static final List<Module> MODULES = new ArrayList<>();
+
+    static int PATCHES_SIZE = 0;
+    static final List<Patch> PATCHES = new ArrayList<>();
 
     public static void start() {
-        TIMER_TASK.cancel();
-        TIMER.purge();
+        stop();
 
         TIMER_TASK = new TickTask();
         TIMER.scheduleAtFixedRate(TIMER_TASK, 100, SAMPLE_RATE / 1000);
@@ -27,11 +31,6 @@ public class Clock {
     public static void stop() {
         TIMER_TASK.cancel();
         TIMER.purge();
-    }
-
-    public static void reset() {
-        stop();
-        start();
     }
 
     public static void setSampleRate(int sampleRate) {
@@ -46,6 +45,16 @@ public class Clock {
     public void removeModule(Module module) {
         MODULES.remove(module);
         MODULES_SIZE = MODULES.size();
+    }
+
+    public void addPatch(Patch patch) {
+        PATCHES.add(patch);
+        PATCHES_SIZE = PATCHES.size();
+    }
+
+    public void removePatch(Patch patch) {
+        PATCHES.remove(patch);
+        PATCHES_SIZE = PATCHES.size();
     }
 
 }

@@ -9,8 +9,6 @@ public class Connector {
     private final String name;
     private final String description;
 
-    private Patch outputPatch = null;
-
     private double input = 0;
     private double output = 0;
 
@@ -33,15 +31,6 @@ public class Connector {
 
     public String getDescription() {
         return description;
-    }
-
-    public Patch getOutputPatch() {
-        return outputPatch;
-    }
-
-    public void setOutputPatch(Patch outputPatch) {
-        this.outputPatch = outputPatch;
-        this.outputPatch.setInputConnector(this);
     }
 
     public double getInputClip() {
@@ -97,42 +86,34 @@ public class Connector {
                 : (input > inputClip) ? inputClip
                 : (input < -inputClip) ? -inputClip
                 : input;
+    }
 
-        output = this.input * outputRatio;
-
+    public double getOutput() {
         if (outputScale != 0) {
             switch (scaleCurve) {
                 case LINEAR:
-                    output = MathFunctions.linearInterpolation(0, outputScale, output);
+                    output = MathFunctions.linearInterpolation(0, outputScale, input * outputRatio);
                     break;
 
                 case SMOOTH:
-                    output = MathFunctions.smoothInterpolation(0, outputScale, output);
+                    output = MathFunctions.smoothInterpolation(0, outputScale, input * outputRatio);
                     break;
 
                 case EXP_DECREASE:
-                    output = MathFunctions.expDecreaseInterpolation(0, outputScale, output);
+                    output = MathFunctions.expDecreaseInterpolation(0, outputScale, input * outputRatio);
                     break;
 
                 case EXP_INCREASE:
-                    output = MathFunctions.expIncreaseInterpolation(0, outputScale, output);
+                    output = MathFunctions.expIncreaseInterpolation(0, outputScale, input * outputRatio);
                     break;
             }
         }
 
-        output = ((outputClip == 0) ? output
+        return ((outputClip == 0) ? output
                 : (output > outputClip) ? outputClip
                 : (output < -outputClip) ? -outputClip
                 : output)
                 + (signedScaleOutput ? 0 : outputScale);
-
-        if (outputPatch != null) {
-            outputPatch.passData();
-        }
-    }
-
-    public double getOutput() {
-        return output;
     }
 
 }

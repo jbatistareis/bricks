@@ -1,15 +1,16 @@
 package com.jbatista.bricks.components;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Module {
 
     protected String name;
     protected String description;
 
-    protected final LinkedList<Connector> inputs = new LinkedList<>();
-    protected final LinkedList<Connector> outputs = new LinkedList<>();
-    protected final LinkedList<Controler> controllers = new LinkedList<>();
+    protected final List<Connector> inputs = new ArrayList<>();
+    protected final List<Connector> outputs = new ArrayList<>();
+    protected final List<Controler> controllers = new ArrayList<>();
 
     public String getName() {
         return name;

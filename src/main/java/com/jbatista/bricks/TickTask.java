@@ -11,6 +11,10 @@ class TickTask extends TimerTask {
         for (index = 0; index < Clock.MODULES_SIZE; index++) {
             Clock.MODULES.get(index).process();
         }
+
+        for (index = 0; index < Clock.PATCHES_SIZE; index++) {
+            Clock.PATCHES.get(index).passData();
+        }
     }
 
 }

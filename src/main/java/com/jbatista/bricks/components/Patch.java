@@ -21,7 +21,7 @@ public class Patch {
         this.outputConnector = outputConnector;
     }
 
-    void passData(){
+    public void passData() {
         outputConnector.setInput(inputConnector.getOutput());
     }
 
