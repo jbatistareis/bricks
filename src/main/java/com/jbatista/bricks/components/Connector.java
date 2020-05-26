@@ -2,23 +2,28 @@ package com.jbatista.bricks.components;
 
 import com.jbatista.bricks.util.MathFunctions;
 
-public class Connector {
+public abstract class Connector {
 
-    public enum ScaleCurve {LINEAR, SMOOTH, EXP_DECREASE, EXP_INCREASE}
+    public enum Curve {LINEAR, SMOOTH, EXP_INCREASE, EXP_DECREASE}
 
     private final String name;
     private final String description;
 
-    private double input = 0;
-    private double output = 0;
+    protected Patch inputPatch = null;
+    protected Patch outputPatch = null;
+
+    private double inputData = 0;
+    private double outputData = 0;
 
     private double inputClip = 0;
     private double outputClip = 0;
     private double outputRatio = 1;
 
     private double outputScale = 0;
-    private boolean signedScaleOutput = true;
-    private ScaleCurve scaleCurve = ScaleCurve.LINEAR;
+    private double outputScaleCenter = 0;
+    private Curve scaleCurve = Curve.LINEAR;
+
+    boolean connected = false;
 
     public Connector(String name, String description) {
         this.name = name;
@@ -33,12 +38,62 @@ public class Connector {
         return description;
     }
 
+    public Patch getPatch() {
+        return (inputPatch != null) ? inputPatch : outputPatch;
+    }
+
+    public abstract void connectPatch(Patch patch);
+
+    public abstract void disconnectPatch();
+
+    public void write(double data) {
+        inputData = (inputClip == 0) ? data
+                : (data > inputClip) ? inputClip
+                : (data < -inputClip) ? -inputClip
+                : data;
+
+        if (inputPatch != null) {
+            inputPatch.passData();
+        }
+    }
+
+    public double read() {
+        if (outputScale != 0) {
+            switch (scaleCurve) {
+                case LINEAR:
+                    outputData = MathFunctions.linearInterpolation(0, outputScale, inputData);
+                    break;
+
+                case SMOOTH:
+                    outputData = MathFunctions.smoothInterpolation(0, outputScale, inputData);
+                    break;
+
+                case EXP_DECREASE:
+                    outputData = MathFunctions.expDecreaseInterpolation(0, outputScale, inputData);
+                    break;
+
+                case EXP_INCREASE:
+                    outputData = MathFunctions.expIncreaseInterpolation(0, outputScale, inputData);
+                    break;
+            }
+        } else {
+            outputData = inputData;
+        }
+
+        return (((outputClip == 0) ? outputData
+                : (outputData > outputClip) ? outputClip
+                : (outputData < -outputClip) ? -outputClip
+                : outputData)
+                + outputScaleCenter)
+                * outputRatio;
+    }
+
     public double getInputClip() {
         return inputClip;
     }
 
     public void setInputClip(double inputClip) {
-        this.inputClip = Math.max(0, Math.min(inputClip, 64));
+        this.inputClip = Math.max(0, Math.min(inputClip, 127));
     }
 
     public double getOutputClip() {
@@ -46,7 +101,7 @@ public class Connector {
     }
 
     public void setOutputClip(double outputClip) {
-        this.outputClip = Math.max(0, Math.min(outputClip, 64));
+        this.outputClip = Math.max(0, Math.min(outputClip, 127));
     }
 
     public double getOutputRatio() {
@@ -54,7 +109,7 @@ public class Connector {
     }
 
     public void setOutputRatio(double outputRatio) {
-        this.outputRatio = Math.max(0, Math.min(outputRatio, 64));
+        this.outputRatio = Math.max(0, Math.min(outputRatio, 127));
     }
 
     public double getOutputScale() {
@@ -62,58 +117,47 @@ public class Connector {
     }
 
     public void setOutputScale(double outputScale) {
-        this.outputScale = Math.max(-127, Math.min(outputScale, 127));
+        this.outputScale = Math.max(0, Math.min(outputScale, 127));
     }
 
-    public boolean isSignedScaleOutput() {
-        return signedScaleOutput;
+    public double getOutputScaleCenter() {
+        return outputScaleCenter;
     }
 
-    public void setSignedScaleOutput(boolean signedScaleOutput) {
-        this.signedScaleOutput = signedScaleOutput;
+    public void setOutputScaleCenter(double outputScaleCenter) {
+        this.outputScaleCenter = Math.max(0, Math.min(outputScaleCenter, 127));
     }
 
-    public ScaleCurve getScaleCurve() {
+    public Curve getScaleCurve() {
         return scaleCurve;
     }
 
-    public void setScaleCurve(ScaleCurve scaleCurve) {
+    public void setScaleCurve(Curve scaleCurve) {
         this.scaleCurve = scaleCurve;
     }
 
-    public void setInput(double input) {
-        this.input = (inputClip == 0) ? input
-                : (input > inputClip) ? inputClip
-                : (input < -inputClip) ? -inputClip
-                : input;
+    public void setScaleCurve(int scaleCurve) {
+        switch (scaleCurve) {
+            case 1:
+                this.scaleCurve = Curve.SMOOTH;
+                break;
+
+            case 2:
+                this.scaleCurve = Curve.EXP_INCREASE;
+                break;
+
+            case 3:
+                this.scaleCurve = Curve.EXP_DECREASE;
+                break;
+
+            default: // 0
+                this.scaleCurve = Curve.LINEAR;
+                break;
+        }
     }
 
-    public double getOutput() {
-        if (outputScale != 0) {
-            switch (scaleCurve) {
-                case LINEAR:
-                    output = MathFunctions.linearInterpolation(0, outputScale, input * outputRatio);
-                    break;
-
-                case SMOOTH:
-                    output = MathFunctions.smoothInterpolation(0, outputScale, input * outputRatio);
-                    break;
-
-                case EXP_DECREASE:
-                    output = MathFunctions.expDecreaseInterpolation(0, outputScale, input * outputRatio);
-                    break;
-
-                case EXP_INCREASE:
-                    output = MathFunctions.expIncreaseInterpolation(0, outputScale, input * outputRatio);
-                    break;
-            }
-        }
-
-        return ((outputClip == 0) ? output
-                : (output > outputClip) ? outputClip
-                : (output < -outputClip) ? -outputClip
-                : output)
-                + (signedScaleOutput ? 0 : outputScale);
+    public boolean isConnected() {
+        return connected;
     }
 
 }

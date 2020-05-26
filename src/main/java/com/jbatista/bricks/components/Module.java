@@ -8,9 +8,9 @@ public abstract class Module {
     protected String name;
     protected String description;
 
-    protected final List<Connector> inputs = new ArrayList<>();
-    protected final List<Connector> outputs = new ArrayList<>();
-    protected final List<Controler> controllers = new ArrayList<>();
+    protected final List<InputConnector> inputs = new ArrayList<>();
+    protected final List<OutputConnector> outputs = new ArrayList<>();
+    protected final List<Controller> controllers = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -20,15 +20,15 @@ public abstract class Module {
         return description;
     }
 
-    public Connector getInputs(int index) {
+    public Connector getInput(int index) {
         return inputs.get(index);
     }
 
-    public Connector getOutputs(int index) {
+    public Connector getOutput(int index) {
         return outputs.get(index);
     }
 
-    public Controler getControllers(int index) {
+    public Controller getController(int index) {
         return controllers.get(index);
     }
 

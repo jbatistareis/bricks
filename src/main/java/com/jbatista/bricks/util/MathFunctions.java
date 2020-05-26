@@ -10,6 +10,7 @@ import java.util.Random;
  */
 public class MathFunctions {
 
+    public static final double PI = 3.1415;
     public static final double TAU = 6.2831;
     public static final double FRAC_PI_DIV_2 = 1.5707;
     public static final double FRAC_2_DIV_PI = 0.6366;
@@ -86,7 +87,6 @@ public class MathFunctions {
             buffer[bufferIndex + 3] = (byte) (value >> 24);
         }
     }
-
 
     public static double linearInterpolation(double start, double end, double factor) {
         return start + factor * (end - start);
