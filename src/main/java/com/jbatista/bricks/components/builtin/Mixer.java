@@ -13,12 +13,8 @@ public class Mixer extends Module {
         for (int i = 0; i < 6; i++) {
             inputs.add(new InputConnector("In " + (i + 1), "Receives a signal"));
             controllers.add(new Controller(
-                    "Vol. " + (i + 1),
-                    "Sets the individual output volume",
-                    0,
-                    13,
-                    0.4,
-                    Controller.Curve.EXPONENTIAL,
+                    "Vol. " + (i + 1), "Sets the individual output volume",
+                    0, 1, 0.5, Controller.Curve.EXPONENTIAL,
                     inputs.get(i)::setOutputRatio));
         }
 
@@ -33,7 +29,7 @@ public class Mixer extends Module {
             output += inputs.get(i).read();
         }
 
-        outputs.get(0).write(output / 6.0);
+        outputs.get(0).write(output);
     }
 
 }

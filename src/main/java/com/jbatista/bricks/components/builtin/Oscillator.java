@@ -1,7 +1,10 @@
 package com.jbatista.bricks.components.builtin;
 
 import com.jbatista.bricks.Clock;
-import com.jbatista.bricks.components.*;
+import com.jbatista.bricks.components.Controller;
+import com.jbatista.bricks.components.InputConnector;
+import com.jbatista.bricks.components.Module;
+import com.jbatista.bricks.components.OutputConnector;
 import com.jbatista.bricks.util.MathFunctions;
 
 public class Oscillator extends Module {
@@ -32,39 +35,23 @@ public class Oscillator extends Module {
         outputs.add(new OutputConnector("Wave", "Returns the resulting wave"));
 
         controllers.add(new Controller(
-                "Freq. ratio",
-                "Inc./dec. input frequency",
-                0.5,
-                31,
-                1,
-                Controller.Curve.ORIGINAL,
+                "Freq. ratio", "Inc./dec. input frequency",
+                0.5, 31, 1, Controller.Curve.ORIGINAL,
                 inputs.get(0)::setOutputRatio));
 
         controllers.add(new Controller(
-                "AM strength",
-                "How much modulation affect amplitude",
-                0,
-                1,
-                1,
-                Controller.Curve.ORIGINAL,
+                "AM strength", "How much modulation affect amplitude",
+                0, 1, 1, Controller.Curve.ORIGINAL,
                 inputs.get(1)::setOutputRatio));
 
         controllers.add(new Controller(
-                "FM strength",
-                "How much modulation will affect frequency",
-                0,
-                1,
-                0.5,
-                Controller.Curve.ORIGINAL,
+                "FM strength", "How much modulation will affect frequency",
+                0, 1, 0.5, Controller.Curve.ORIGINAL,
                 inputs.get(2)::setOutputScale));
 
         controllers.add(new Controller(
-                "Shape",
-                "Sets the wave shape",
-                0,
-                5,
-                0,
-                Controller.Curve.ORIGINAL,
+                "Shape", "Sets the wave shape",
+                0, 5, 0, Controller.Curve.ORIGINAL,
                 this::setShape,
                 0, 1, 2, 3, 4, 5));
     }
@@ -118,6 +105,8 @@ public class Oscillator extends Module {
                     break;
             }
 
+            periodTimer();
+
             if (inputs.get(1).isConnected()) {
                 outputs.get(1).write(periodValue * inputs.get(1).read());
             } else {
@@ -132,27 +121,22 @@ public class Oscillator extends Module {
 
     private void sine() {
         periodValue = Math.sin(MathFunctions.TAU * frequencyPeriod * periodAccumulator);
-        periodTimer();
     }
 
     private void square() {
         periodValue = (periodAccumulator < periodPhase) ? 1 : -1;
-        periodTimer();
     }
 
     private void triangle() {
         periodValue = (periodAccumulator == 0) ? -1 : (periodAccumulator < periodPhase) ? (periodValue + triangleIncrement) : (periodValue - triangleIncrement);
-        periodTimer();
     }
 
     private void sawUp() {
         periodValue = (periodAccumulator == 0) ? -1 : (periodValue + sawIncrement);
-        periodTimer();
     }
 
     private void sawDown() {
         periodValue = (periodAccumulator == 0) ? 1 : (periodValue - sawIncrement);
-        periodTimer();
     }
 
     private void whiteNoise() {
