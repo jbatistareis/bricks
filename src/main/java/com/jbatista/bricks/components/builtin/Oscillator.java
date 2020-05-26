@@ -14,6 +14,7 @@ public class Oscillator extends Module {
 
     private double frequency;
     private double frequencyPeriod;
+    private double inputFrequency;
     private double previousFrequency = 0;
 
     private int period;
@@ -33,6 +34,11 @@ public class Oscillator extends Module {
 
         outputs.add(new OutputConnector("Freq.", "Returns the received frequency"));
         outputs.add(new OutputConnector("Wave", "Returns the resulting wave"));
+
+        controllers.add(new Controller(
+                "Frequency", "Defines a fixed frequency",
+                0, 1975.53, 0, Controller.Curve.LINEAR,
+                this::setInputFrequency));
 
         controllers.add(new Controller(
                 "Freq. ratio", "Inc./dec. input frequency",
@@ -58,11 +64,15 @@ public class Oscillator extends Module {
 
     @Override
     public void process() {
+        if (inputs.get(0).isConnected()) {
+            inputFrequency = inputs.get(0).read();
+        }
+
         // FM
         if (inputs.get(2).isConnected()) {
-            frequency = inputs.get(0).read() * inputs.get(2).read();
+            frequency = inputFrequency * inputs.get(2).read();
         } else {
-            frequency = inputs.get(0).read();
+            frequency = inputFrequency;
         }
 
         outputs.get(0).write(frequency); // frequency passthrough
@@ -173,6 +183,14 @@ public class Oscillator extends Module {
                 this.shape = Shape.SINE;
                 break;
         }
+    }
+
+    void setInputFrequency(double inputFrequency) {
+        this.inputFrequency = inputFrequency;
+    }
+
+    public double getFrequency() {
+        return frequency;
     }
 
 }
