@@ -28,7 +28,7 @@ public class Oscillator extends Module {
     public Oscillator() {
         inputs.add(new InputConnector("Freq.", "Receives a frequency to play"));
         inputs.add(new InputConnector("AM", "Amplitude modulation"));
-        inputs.add(new InputConnector("FM Lin.", "Linear frequency modulation"));
+        inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));
 
         inputs.get(2).setOutputScaleCenter(1);
 
@@ -37,12 +37,12 @@ public class Oscillator extends Module {
 
         controllers.add(new Controller(
                 "Frequency", "Defines a fixed frequency",
-                0, 1975.53, 0, Controller.Curve.LINEAR,
+                1, 2000, 0, Controller.Curve.LINEAR,
                 this::setInputFrequency));
 
         controllers.add(new Controller(
                 "Freq. ratio", "Inc./dec. input frequency",
-                0.5, 31, 1, Controller.Curve.ORIGINAL,
+                0.5, 10, 1, Controller.Curve.ORIGINAL,
                 inputs.get(0)::setOutputRatio));
 
         controllers.add(new Controller(
@@ -75,7 +75,7 @@ public class Oscillator extends Module {
             frequency = inputFrequency;
         }
 
-        outputs.get(0).write(frequency); // frequency passthrough
+        outputs.get(0).write(inputFrequency); // frequency passthrough
 
         if (frequency != 0) {
             if (frequency != previousFrequency) {
