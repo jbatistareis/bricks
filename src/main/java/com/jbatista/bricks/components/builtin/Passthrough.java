@@ -1,11 +1,10 @@
 package com.jbatista.bricks.components.builtin;
 
-import com.jbatista.bricks.components.Connector;
 import com.jbatista.bricks.components.InputConnector;
-import com.jbatista.bricks.components.Module;
+import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.OutputConnector;
 
-public class Passthrough extends Module {
+public class Passthrough extends CommonModule {
 
     private int index = 0;
     private double input;

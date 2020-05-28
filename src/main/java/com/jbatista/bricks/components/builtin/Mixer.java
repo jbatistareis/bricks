@@ -2,10 +2,10 @@ package com.jbatista.bricks.components.builtin;
 
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.InputConnector;
-import com.jbatista.bricks.components.Module;
+import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.OutputConnector;
 
-public class Mixer extends Module {
+public class Mixer extends CommonModule {
 
     private double output;
 

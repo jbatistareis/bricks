@@ -3,11 +3,11 @@ package com.jbatista.bricks.components.builtin;
 import com.jbatista.bricks.Clock;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.InputConnector;
-import com.jbatista.bricks.components.Module;
+import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.OutputConnector;
 import com.jbatista.bricks.util.MathFunctions;
 
-public class Oscillator extends Module {
+public class Oscillator extends CommonModule {
     public enum Shape {SINE, SQUARE, TRIANGLE, SAWTOOTH_UP, SAWTOOTH_DOWN, WHITE_NOISE}
 
     private Shape shape;

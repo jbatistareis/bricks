@@ -3,9 +3,9 @@ package com.jbatista.bricks.components.builtin;
 import com.jbatista.bricks.Clock;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.InputConnector;
-import com.jbatista.bricks.components.Module;
+import com.jbatista.bricks.components.CommonModule;
 
-public class SoundOut extends Module {
+public class SoundOut extends CommonModule {
 
     private double sample;
 

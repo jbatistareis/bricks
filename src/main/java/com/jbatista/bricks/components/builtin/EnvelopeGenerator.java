@@ -3,11 +3,11 @@ package com.jbatista.bricks.components.builtin;
 import com.jbatista.bricks.Clock;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.InputConnector;
-import com.jbatista.bricks.components.Module;
+import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.OutputConnector;
 import com.jbatista.bricks.util.MathFunctions;
 
-public class EnvelopeGenerator extends Module {
+public class EnvelopeGenerator extends CommonModule {
 
     private enum State {ATTACK, DECAY, SUSTAIN, RELEASE, PRE_IDLE, HOLD, IDLE}
 
