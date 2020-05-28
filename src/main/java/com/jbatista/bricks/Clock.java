@@ -1,6 +1,6 @@
 package com.jbatista.bricks;
 
-import com.jbatista.bricks.components.Module;
+import com.jbatista.bricks.components.CommonModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ public class Clock {
 
     private static int index;
 
-    static final List<Module> MODULES = new ArrayList<>();
+    static final List<CommonModule> MODULES = new ArrayList<>();
     static int MODULES_SIZE = 0;
 
     public static void tick() {
@@ -28,14 +28,14 @@ public class Clock {
         SAMPLE_RATE = sampleRate;
     }
 
-    public static void addModule(Module module) {
+    public static void addModule(CommonModule module) {
         if (!MODULES.contains(module)) {
             MODULES.add(module);
             MODULES_SIZE = MODULES.size();
         }
     }
 
-    public static void removeModule(Module module) {
+    public static void removeModule(CommonModule module) {
         if (MODULES.contains(module)) {
             MODULES.remove(module);
             MODULES_SIZE = MODULES.size();

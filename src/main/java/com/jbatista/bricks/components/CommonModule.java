@@ -5,7 +5,7 @@ import com.jbatista.bricks.Clock;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Module {
+public abstract class CommonModule {
 
     protected String name;
     protected String description;
@@ -14,7 +14,7 @@ public abstract class Module {
     protected final List<OutputConnector> outputs = new ArrayList<>();
     protected final List<Controller> controllers = new ArrayList<>();
 
-    public Module() {
+    public CommonModule() {
         Clock.addModule(this);
     }
 
