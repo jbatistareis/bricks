@@ -96,12 +96,12 @@ public class MathFunctions {
         return linearInterpolation(start, end, Math.pow(factor, 2) * (3 - 2 * factor));
     }
 
-    public static double expIncreaseInterpolation(double start, double end, double factor) {
-        return linearInterpolation(start, end, Math.pow(factor, 3));
+    public static double expIncreaseInterpolation(double start, double end, double factor, int power) {
+        return linearInterpolation(start, end, Math.pow(factor, power));
     }
 
-    public static double expDecreaseInterpolation(double start, double end, double factor) {
-        return linearInterpolation(start, end, 1 - Math.pow(1 - factor, 3));
+    public static double expDecreaseInterpolation(double start, double end, double factor, int power) {
+        return linearInterpolation(start, end, 1 - Math.pow(1 - factor, power));
     }
 
     public static double frequencyByKeyPosition(boolean midi, int position) {
