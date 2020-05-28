@@ -48,7 +48,7 @@ public class EnvelopeGenerator extends Module {
         double index = 0;
         for (int i = 0; i < 128; i++) {
             LEVEL_TABLE[i] = MathFunctions.expIncreaseInterpolation(0, 1, index, 5);
-            SPEED_TABLE[i] = MathFunctions.expDecreaseInterpolation(40, 0.0001, index, 5);
+            SPEED_TABLE[i] = MathFunctions.expDecreaseInterpolation(30, 0.0001, index, 5);
             CONTROL_LEVELS[i] = i;
             index += 0.0078125;
         }
@@ -117,6 +117,7 @@ public class EnvelopeGenerator extends Module {
         } else if ((currentTrigger > 0) && (currentTrigger == previousTrigger)) {
             advanceEnvelope();
         } else if ((currentTrigger == 0) && (currentTrigger != previousTrigger)) {
+            previousTrigger = currentTrigger;
             stop();
         }
 
