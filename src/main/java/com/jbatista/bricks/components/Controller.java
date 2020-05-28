@@ -13,6 +13,7 @@ public class Controller {
     private final String description;
 
     private double value;
+    private double displayValue;
     private final double min;
     private final double max;
     private final int[] validValues;
@@ -57,17 +58,23 @@ public class Controller {
 
         switch (curve) {
             case ORIGINAL:
-                callback.accept(this.value);
+                displayValue = this.value;
                 break;
 
             case LINEAR:
-                callback.accept(MathFunctions.linearInterpolation(min, max, value));
+                displayValue = MathFunctions.linearInterpolation(min, max, value);
                 break;
 
             case EXPONENTIAL:
-                callback.accept(MathFunctions.expIncreaseInterpolation(min, max, value, 5));
+                displayValue = MathFunctions.expIncreaseInterpolation(min, max, value, 5);
                 break;
         }
+
+        callback.accept(displayValue);
+    }
+
+    public double getDisplayValue() {
+        return displayValue;
     }
 
     public double getMin() {
