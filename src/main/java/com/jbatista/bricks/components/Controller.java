@@ -65,7 +65,7 @@ public class Controller {
                 break;
 
             case EXPONENTIAL:
-                callback.accept(MathFunctions.expIncreaseInterpolation(min, max, value));
+                callback.accept(MathFunctions.expIncreaseInterpolation(min, max, value, 5));
                 break;
         }
     }

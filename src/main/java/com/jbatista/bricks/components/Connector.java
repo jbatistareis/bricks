@@ -69,11 +69,11 @@ public abstract class Connector {
                     break;
 
                 case EXP_DECREASE:
-                    outputData = MathFunctions.expDecreaseInterpolation(0, outputScale, inputData);
+                    outputData = MathFunctions.expDecreaseInterpolation(0, outputScale, inputData, 5);
                     break;
 
                 case EXP_INCREASE:
-                    outputData = MathFunctions.expIncreaseInterpolation(0, outputScale, inputData);
+                    outputData = MathFunctions.expIncreaseInterpolation(0, outputScale, inputData, 5);
                     break;
             }
         } else {
