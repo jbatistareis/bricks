@@ -53,7 +53,7 @@ public abstract class Connector {
                 : data;
 
         if (inputPatch != null) {
-            inputPatch.passData();
+            inputPatch.passData(inputData);
         }
     }
 

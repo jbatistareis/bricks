@@ -11,8 +11,8 @@ public class Clock {
 
     private static int index;
 
-    static final List<CommonModule> MODULES = new ArrayList<>();
-    static int MODULES_SIZE = 0;
+    private static final List<CommonModule> MODULES = new ArrayList<>();
+    private static int MODULES_SIZE = 0;
 
     public static void tick() {
         for (index = 0; index < MODULES_SIZE; index++) {

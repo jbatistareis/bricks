@@ -8,8 +8,8 @@ public class InputConnector extends Connector {
 
     @Override
     public void connectPatch(Patch patch) {
-        patch.outputConnector = this;
         this.outputPatch = patch;
+        this.outputPatch.outputConnector = this;
         this.connected = true;
     }
 
