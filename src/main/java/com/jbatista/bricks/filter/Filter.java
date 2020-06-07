@@ -1,4 +1,4 @@
-package com.jbatista.bricks.util;
+package com.jbatista.bricks.filter;
 
 public interface Filter {
 

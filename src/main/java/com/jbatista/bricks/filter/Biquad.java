@@ -1,7 +1,5 @@
 package com.jbatista.bricks.filter;
 
-import com.jbatista.bricks.util.Filter;
-
 // uses direct-form I
 abstract class Biquad implements Filter {
 

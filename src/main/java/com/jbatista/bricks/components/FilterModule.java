@@ -1,6 +1,6 @@
 package com.jbatista.bricks.components;
 
-import com.jbatista.bricks.util.Filter;
+import com.jbatista.bricks.filter.Filter;
 
 public abstract class FilterModule extends CommonModule {
 
