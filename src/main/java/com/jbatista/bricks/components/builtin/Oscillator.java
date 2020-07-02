@@ -1,9 +1,9 @@
 package com.jbatista.bricks.components.builtin;
 
 import com.jbatista.bricks.Clock;
+import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.InputConnector;
-import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.OutputConnector;
 import com.jbatista.bricks.util.MathFunctions;
 
@@ -27,17 +27,19 @@ public class Oscillator extends CommonModule {
 
     public Oscillator() {
         inputs.add(new InputConnector("Freq.", "Receives a frequency to play"));
-        inputs.add(new InputConnector("AM", "Amplitude modulation"));
         inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));
+        inputs.add(new InputConnector("Pitch", "Sets small a pitch bend"));
 
+        inputs.get(1).setOutputScaleCenter(1);
         inputs.get(2).setOutputScaleCenter(1);
 
         outputs.add(new OutputConnector("Freq.", "Returns the received frequency"));
         outputs.add(new OutputConnector("Wave", "Returns the resulting wave"));
+        outputs.add(new OutputConnector("Active", "Indicates that this oscillator is producing a signal"));
 
         controllers.add(new Controller(
                 "Frequency", "Defines a fixed frequency",
-                1, 2000, 0, Controller.Curve.LINEAR,
+                1, 2000, 0.5, Controller.Curve.LINEAR,
                 this::setInputFrequency));
 
         controllers.add(new Controller(
@@ -46,12 +48,7 @@ public class Oscillator extends CommonModule {
                 inputs.get(0)::setOutputRatio));
 
         controllers.add(new Controller(
-                "AM strength", "How much modulation affect amplitude",
-                0, 1, 1, Controller.Curve.ORIGINAL,
-                inputs.get(1)::setOutputRatio));
-
-        controllers.add(new Controller(
-                "FM strength", "How much modulation will affect frequency",
+                "FM strength", "How much modulation will applied",
                 0, 1, 0.5, Controller.Curve.ORIGINAL,
                 inputs.get(2)::setOutputScale));
 
@@ -68,12 +65,20 @@ public class Oscillator extends CommonModule {
             inputFrequency = inputs.get(0).read();
         }
 
+        if (inputFrequency > 0) {
+            outputs.get(2).write(1);
+        } else {
+            outputs.get(2).write(0);
+        }
+
         // FM
-        if (inputs.get(2).isConnected()) {
-            frequency = inputFrequency * inputs.get(2).read();
+        if (inputs.get(1).isConnected()) {
+            frequency = inputFrequency * inputs.get(1).read();
         } else {
             frequency = inputFrequency;
         }
+
+        frequency *= Math.max(0.5, Math.min(inputs.get(1).read(), 1.5));
 
         outputs.get(0).write(inputFrequency); // frequency passthrough
 
@@ -116,13 +121,7 @@ public class Oscillator extends CommonModule {
             }
 
             periodTimer();
-
-            if (inputs.get(1).isConnected()) {
-                outputs.get(1).write(periodValue * inputs.get(1).read());
-            } else {
-                outputs.get(1).write(periodValue);
-            }
-
+            outputs.get(1).write(periodValue);
         } else {
             periodAccumulator = 0;
             outputs.get(0).write(0);

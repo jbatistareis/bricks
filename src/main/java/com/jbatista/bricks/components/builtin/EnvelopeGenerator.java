@@ -1,9 +1,9 @@
 package com.jbatista.bricks.components.builtin;
 
 import com.jbatista.bricks.Clock;
+import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.InputConnector;
-import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.OutputConnector;
 import com.jbatista.bricks.util.MathFunctions;
 
@@ -55,12 +55,10 @@ public class EnvelopeGenerator extends CommonModule {
     }
 
     public EnvelopeGenerator() {
-        inputs.add(new InputConnector("Trigger", "Start/stop signal, usually a frequency value"));
+        inputs.add(new InputConnector("In", "The sound signal that will receive AM"));
+        inputs.add(new InputConnector("Trigger", "Start/stop signal"));
 
-
-        outputs.add(new OutputConnector("Trigger", "Trigger signal passthrough"));
-        outputs.add(new OutputConnector("Signal", "Envelope output"));
-
+        outputs.add(new OutputConnector("Out", "The modified signal"));
 
         controllers.add(new Controller(
                 "Atk. Lvl.", "Attack amplitude level",
@@ -107,7 +105,6 @@ public class EnvelopeGenerator extends CommonModule {
     @Override
     public void process() {
         currentTrigger = inputs.get(0).read();
-        outputs.get(0).write(currentTrigger); // passthrough
 
         if ((currentTrigger > 0) && (currentTrigger != previousTrigger)) {
             previousTrigger = currentTrigger;
@@ -121,7 +118,7 @@ public class EnvelopeGenerator extends CommonModule {
             stop();
         }
 
-        getOutput(1).write(currentAmplitude);
+        getOutput(0).write(currentAmplitude * getInput(0).read());
     }
 
     private void checkParameters() {
