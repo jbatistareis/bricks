@@ -9,6 +9,8 @@ public class HighPassFilter extends FilterModule {
     private final HighPass highPass = new HighPass();
 
     public HighPassFilter() {
+        name = "High-pass filter";
+
         filter = highPass;
 
         controllers.add(new Controller(

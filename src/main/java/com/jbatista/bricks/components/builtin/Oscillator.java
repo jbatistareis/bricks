@@ -26,6 +26,8 @@ public class Oscillator extends CommonModule {
     private double triangleIncrement;
 
     public Oscillator() {
+        name = "Oscillator";
+
         inputs.add(new InputConnector("Freq.", "Receives a frequency to play"));
         inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));
         inputs.add(new InputConnector("Pitch", "Sets small a pitch bend"));

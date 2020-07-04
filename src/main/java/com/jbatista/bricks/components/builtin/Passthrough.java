@@ -10,6 +10,8 @@ public class Passthrough extends CommonModule {
     private double input;
 
     public Passthrough() {
+        name = "Passthrough";
+
         inputs.add(new InputConnector("In", "Receives a signal, and passes it to all outputs, unchanged"));
 
         for (int i = 0; i < 6; i++) {

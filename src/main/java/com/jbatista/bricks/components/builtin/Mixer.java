@@ -10,6 +10,8 @@ public class Mixer extends CommonModule {
     private double output;
 
     public Mixer() {
+        name = "Mixer";
+
         for (int i = 0; i < 6; i++) {
             inputs.add(new InputConnector("In " + (i + 1), "Receives a signal"));
             controllers.add(new Controller(

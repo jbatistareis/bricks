@@ -55,6 +55,8 @@ public class EnvelopeGenerator extends CommonModule {
     }
 
     public EnvelopeGenerator() {
+        name = "Envelope generator";
+
         inputs.add(new InputConnector("In", "The sound signal that will receive AM"));
         inputs.add(new InputConnector("Trigger", "Start/stop signal"));
 

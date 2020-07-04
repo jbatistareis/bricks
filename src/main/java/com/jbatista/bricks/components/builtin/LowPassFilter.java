@@ -9,6 +9,8 @@ public class LowPassFilter extends FilterModule {
     private final LowPass lowPass = new LowPass();
 
     public LowPassFilter() {
+        name = "Low-pass Filter";
+
         filter = lowPass;
 
         controllers.add(new Controller(

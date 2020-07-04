@@ -11,6 +11,8 @@ public class SoundOut extends CommonModule {
     private double sample;
 
     public SoundOut() {
+        name = "Sound Output";
+
         inputs.add(new InputConnector("In", "Receives a signal"));
 
         controllers.add(new Controller(

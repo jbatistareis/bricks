@@ -13,6 +13,8 @@ public class Keyboard extends CommonModule {
     private KeyboardNote[] pressedNotes = new KeyboardNote[]{null, null, null, null, null, null};
 
     public Keyboard() {
+        name = "Keyboard";
+
         outputs.add(new OutputConnector("Poly 1", "Frequency output"));
         outputs.add(new OutputConnector("Poly 2", "Frequency output"));
         outputs.add(new OutputConnector("Poly 3", "Frequency output"));

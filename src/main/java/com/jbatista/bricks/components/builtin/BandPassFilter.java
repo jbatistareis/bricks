@@ -9,6 +9,8 @@ public class BandPassFilter extends FilterModule {
     private final BandPass bandPass = new BandPass();
 
     public BandPassFilter() {
+        name = "Band-pass filter";
+
         filter = bandPass;
 
         controllers.add(new Controller(
