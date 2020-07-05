@@ -45,7 +45,7 @@ public class Oscillator extends CommonModule {
 
         controllers.add(new Controller(
                 "Freq. ratio", "Inc./dec. input frequency",
-                0.5, 10, 0.1, 1, Controller.Curve.ORIGINAL,
+                0.1, 10, 0.1, 1, Controller.Curve.ORIGINAL,
                 inputs.get(0)::setOutputRatio));
 
         controllers.add(new Controller(
