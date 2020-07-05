@@ -41,22 +41,22 @@ public class Oscillator extends CommonModule {
 
         controllers.add(new Controller(
                 "Frequency", "Defines a fixed frequency",
-                1, 2000, 0.5, Controller.Curve.LINEAR,
+                1, 2000, 0.005, 0.5, Controller.Curve.LINEAR,
                 this::setInputFrequency));
 
         controllers.add(new Controller(
                 "Freq. ratio", "Inc./dec. input frequency",
-                0.5, 10, 1, Controller.Curve.ORIGINAL,
+                0.5, 10, 0.1, 1, Controller.Curve.ORIGINAL,
                 inputs.get(0)::setOutputRatio));
 
         controllers.add(new Controller(
                 "FM strength", "How much modulation will applied",
-                0, 1, 0.5, Controller.Curve.ORIGINAL,
+                0, 1, 0.01, 0.5, Controller.Curve.ORIGINAL,
                 inputs.get(2)::setOutputScale));
 
         controllers.add(new Controller(
                 "Shape", "Sets the wave shape",
-                0, 5, 0, Controller.Curve.ORIGINAL,
+                0, 5, 1, 0, Controller.Curve.ORIGINAL,
                 this::setShape,
                 0, 1, 2, 3, 4, 5));
     }

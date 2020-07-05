@@ -15,12 +15,12 @@ public class BandPassFilter extends FilterModule {
 
         controllers.add(new Controller(
                 "Center Freq.", "Sets the center frequency",
-                1, 2000, 0, Controller.Curve.LINEAR,
+                1, 2000, 0.005, 1, Controller.Curve.LINEAR,
                 bandPass::setCenterFrequency));
 
         controllers.add(new Controller(
                 "Quality", "Sets the filter quality factor",
-                0, 20, 0, Controller.Curve.LINEAR,
+                0, 20, 0.01, 0, Controller.Curve.LINEAR,
                 bandPass::setQ));
     }
 

@@ -1,8 +1,8 @@
 package com.jbatista.bricks.components.builtin;
 
+import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.InputConnector;
-import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.OutputConnector;
 
 public class Mixer extends CommonModule {
@@ -16,7 +16,7 @@ public class Mixer extends CommonModule {
             inputs.add(new InputConnector("In " + (i + 1), "Receives a signal"));
             controllers.add(new Controller(
                     "Vol. " + (i + 1), "Sets the individual output volume",
-                    0, 1, 0.5, Controller.Curve.EXPONENTIAL,
+                    0, 1, 0.01, 0.5, Controller.Curve.EXPONENTIAL,
                     inputs.get(i)::setOutputRatio));
         }
 

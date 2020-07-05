@@ -15,12 +15,12 @@ public class HighPassFilter extends FilterModule {
 
         controllers.add(new Controller(
                 "Frequency", "Sets the frequency cutoff",
-                1, 2000, 0, Controller.Curve.LINEAR,
+                1, 2000, 0.005, 1, Controller.Curve.LINEAR,
                 highPass::setCutoffFrequency));
 
         controllers.add(new Controller(
                 "Resonance", "Sets the resonance",
-                0, 20, 0, Controller.Curve.LINEAR,
+                0, 20, 0.01, 0, Controller.Curve.LINEAR,
                 highPass::setResonance));
     }
 

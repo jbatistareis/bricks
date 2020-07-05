@@ -64,43 +64,43 @@ public class EnvelopeGenerator extends CommonModule {
 
         controllers.add(new Controller(
                 "Atk. Lvl.", "Attack amplitude level",
-                0, 127, 127, Controller.Curve.ORIGINAL,
+                0, 127, 1, 127, Controller.Curve.ORIGINAL,
                 this::setAttackLevel, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Dec. Lvl.", "Decay amplitude level",
-                0, 127, 64, Controller.Curve.ORIGINAL,
+                0, 127, 1, 64, Controller.Curve.ORIGINAL,
                 this::setDecayLevel, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Sus. Lvl.", "Sustain amplitude level",
-                0, 127, 64, Controller.Curve.ORIGINAL,
+                0, 127, 1, 64, Controller.Curve.ORIGINAL,
                 this::setSustainLevel, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Rel. Lvl.", "Release amplitude level",
-                0, 127, 0, Controller.Curve.ORIGINAL,
+                0, 127, 1, 0, Controller.Curve.ORIGINAL,
                 this::setReleaseLevel, CONTROL_LEVELS));
 
 
         controllers.add(new Controller(
                 "Atk. Spd.", "Attack speed",
-                0, 127, 64, Controller.Curve.ORIGINAL,
+                0, 127, 1, 64, Controller.Curve.ORIGINAL,
                 this::setAttackSpeed, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Dec. Spd.", "Decay speed",
-                0, 127, 64, Controller.Curve.ORIGINAL,
+                0, 127, 1, 64, Controller.Curve.ORIGINAL,
                 this::setDecaySpeed, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Sus. Spd.", "Sustain speed",
-                0, 127, 64, Controller.Curve.ORIGINAL,
+                0, 127, 1, 64, Controller.Curve.ORIGINAL,
                 this::setSustainSpeed, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Rel. Spd.", "Release speed",
-                0, 127, 64, Controller.Curve.ORIGINAL,
+                0, 127, 1, 64, Controller.Curve.ORIGINAL,
                 this::setReleaseSpeed, CONTROL_LEVELS));
     }
 

@@ -16,15 +16,17 @@ public class Controller {
     private double displayValue;
     private final double min;
     private final double max;
+    private final double step;
     private final int[] validValues;
     private final Curve curve;
     private final Consumer<Double> callback;
 
-    public Controller(String name, String description, double min, double max, double value, Curve curve, Consumer<Double> callback, int... validValues) {
+    public Controller(String name, String description, double min, double max, double step, double value, Curve curve, Consumer<Double> callback, int... validValues) {
         this.name = name;
         this.description = description;
         this.min = min;
         this.max = max;
+        this.step = step;
         this.validValues = validValues;
         this.curve = curve;
         this.callback = callback;
@@ -83,6 +85,10 @@ public class Controller {
 
     public double getMax() {
         return max;
+    }
+
+    public double getStep() {
+        return step;
     }
 
     public int[] getValidValues() {
