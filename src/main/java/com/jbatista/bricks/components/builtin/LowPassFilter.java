@@ -27,6 +27,11 @@ public class LowPassFilter extends FilterModule {
                 "Resonance", "Sets the resonance",
                 0, 20, 0.01, 0, Controller.Curve.LINEAR,
                 lowPass::setResonance));
+
+        controllers.add(new Controller(
+                "FM str.", "How much modulation is going to be applied",
+                0, 2, 0.01, 0.5, Controller.Curve.LINEAR,
+                inputs.get(1)::setOutputRatio));
     }
 
     @Override

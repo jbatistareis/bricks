@@ -27,6 +27,11 @@ public class BandPassFilter extends FilterModule {
                 "Quality", "Sets the filter quality factor",
                 0, 20, 0.01, 0, Controller.Curve.LINEAR,
                 bandPass::setQ));
+
+        controllers.add(new Controller(
+                "FM str.", "How much modulation is going to be applied",
+                0, 2, 0.01, 0.5, Controller.Curve.LINEAR,
+                inputs.get(1)::setOutputRatio));
     }
 
     @Override
