@@ -1,12 +1,8 @@
 package com.jbatista.bricks.components;
 
-import com.jbatista.bricks.util.MathFunctions;
-
 public abstract class Connector {
 
     public enum Type {INPUT, OUTPUT}
-
-    public enum Curve {LINEAR, SMOOTH, EXP_INCREASE, EXP_DECREASE}
 
     private final String name;
     private final String description;
@@ -21,9 +17,7 @@ public abstract class Connector {
     private double outputClip = 0;
     private double outputRatio = 1;
 
-    private double outputScale = 0;
     private double outputScaleCenter = 0;
-    private Curve scaleCurve = Curve.LINEAR;
 
     protected Type type;
 
@@ -62,27 +56,7 @@ public abstract class Connector {
     }
 
     public double read() {
-        if (outputScale != 0) {
-            switch (scaleCurve) {
-                case LINEAR:
-                    outputData = MathFunctions.linearInterpolation(0, outputScale, inputData);
-                    break;
-
-                case SMOOTH:
-                    outputData = MathFunctions.smoothInterpolation(0, outputScale, inputData);
-                    break;
-
-                case EXP_DECREASE:
-                    outputData = MathFunctions.expDecreaseInterpolation(0, outputScale, inputData, 5);
-                    break;
-
-                case EXP_INCREASE:
-                    outputData = MathFunctions.expIncreaseInterpolation(0, outputScale, inputData, 5);
-                    break;
-            }
-        } else {
-            outputData = inputData;
-        }
+        outputData = inputData;
 
         return (((outputClip == 0) ? outputData
                 : (outputData > outputClip) ? outputClip
@@ -116,48 +90,12 @@ public abstract class Connector {
         this.outputRatio = Math.max(0, Math.min(outputRatio, 127));
     }
 
-    public double getOutputScale() {
-        return outputScale;
-    }
-
-    public void setOutputScale(double outputScale) {
-        this.outputScale = Math.max(0, Math.min(outputScale, 127));
-    }
-
     public double getOutputScaleCenter() {
         return outputScaleCenter;
     }
 
     public void setOutputScaleCenter(double outputScaleCenter) {
         this.outputScaleCenter = Math.max(0, Math.min(outputScaleCenter, 127));
-    }
-
-    public Curve getScaleCurve() {
-        return scaleCurve;
-    }
-
-    public void setScaleCurve(Curve scaleCurve) {
-        this.scaleCurve = scaleCurve;
-    }
-
-    public void setScaleCurve(int scaleCurve) {
-        switch (scaleCurve) {
-            case 1:
-                this.scaleCurve = Curve.SMOOTH;
-                break;
-
-            case 2:
-                this.scaleCurve = Curve.EXP_INCREASE;
-                break;
-
-            case 3:
-                this.scaleCurve = Curve.EXP_DECREASE;
-                break;
-
-            default: // 0
-                this.scaleCurve = Curve.LINEAR;
-                break;
-        }
     }
 
     public Type getType() {

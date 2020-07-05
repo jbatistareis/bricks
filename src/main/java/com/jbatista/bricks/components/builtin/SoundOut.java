@@ -16,9 +16,9 @@ public class SoundOut extends CommonModule {
         inputs.add(new InputConnector("In", "Receives a signal"));
 
         controllers.add(new Controller(
-                "Vol", "Output volume",
+                "Vol.", "Output volume",
                 0, 1, 0.01, 0.5, Controller.Curve.EXPONENTIAL,
-                inputs.get(0)::setOutputScale));
+                inputs.get(0)::setOutputRatio));
     }
 
     @Override

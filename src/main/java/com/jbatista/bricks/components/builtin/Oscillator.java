@@ -49,9 +49,9 @@ public class Oscillator extends CommonModule {
                 inputs.get(0)::setOutputRatio));
 
         controllers.add(new Controller(
-                "FM strength", "How much modulation will applied",
+                "FM str.", "How much modulation is going to be applied",
                 0, 1, 0.01, 0.5, Controller.Curve.ORIGINAL,
-                inputs.get(2)::setOutputScale));
+                inputs.get(2)::setOutputRatio));
 
         controllers.add(new Controller(
                 "Shape", "Sets the wave shape",
