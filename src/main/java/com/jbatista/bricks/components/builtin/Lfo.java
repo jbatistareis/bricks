@@ -15,6 +15,7 @@ public class Lfo extends CommonModule {
     private double frequencyPeriod;
     private double previousFrequency = 0;
 
+    private double mainLevel;
     private double wave1Level;
     private double wave2Level;
     private double wave3Level;
@@ -42,22 +43,27 @@ public class Lfo extends CommonModule {
                 this::setFrequency));
 
         controllers.add(new Controller(
-                "Wave 1 Amp.", "Defines the output 1 amplitude",
+                "Wheel Amp.", "Defines the amplitude for all outputs, from 0 to their respective max.",
+                0, 1, 0.01, 1, Controller.Curve.LINEAR,
+                this::setMainLevel));
+
+        controllers.add(new Controller(
+                "Wave 1 Amp.", "Defines the output 1 max. amplitude",
                 0, 1, 0.01, 1, Controller.Curve.LINEAR,
                 this::setWave1Level));
 
         controllers.add(new Controller(
-                "Wave 2 Amp.", "Defines the output 2 amplitude",
+                "Wave 2 Amp.", "Defines the output 2 max. amplitude",
                 0, 1, 0.01, 1, Controller.Curve.LINEAR,
                 this::setWave2Level));
 
         controllers.add(new Controller(
-                "Wave 3 Amp.", "Defines the output 3 amplitude",
+                "Wave 3 Amp.", "Defines the output 3 max. amplitude",
                 0.5, 1, 0.01, 1, Controller.Curve.LINEAR,
                 this::setWave3Level));
 
         controllers.add(new Controller(
-                "Wave 4 Amp.", "Defines the output 4 amplitude",
+                "Wave 4 Amp.", "Defines the output 4 max. amplitude",
                 0.5, 1, 0.01, 1, Controller.Curve.LINEAR,
                 this::setWave4Level));
 
@@ -109,10 +115,10 @@ public class Lfo extends CommonModule {
             }
 
             periodTimer();
-            outputs.get(0).write(periodValue * wave1Level);
-            outputs.get(1).write(periodValue * wave2Level);
-            outputs.get(2).write(periodValue * wave3Level);
-            outputs.get(3).write(periodValue * wave4Level);
+            outputs.get(0).write(periodValue * wave1Level * mainLevel);
+            outputs.get(1).write(periodValue * wave2Level * mainLevel);
+            outputs.get(2).write(periodValue * wave3Level * mainLevel);
+            outputs.get(3).write(periodValue * wave4Level * mainLevel);
         } else {
             periodAccumulator = 0;
             outputs.get(0).write(0);
@@ -184,6 +190,10 @@ public class Lfo extends CommonModule {
 
     public double getFrequency() {
         return frequency;
+    }
+
+    void setMainLevel(double mainLevel) {
+        this.mainLevel = mainLevel;
     }
 
     void setWave1Level(double wave1Level) {
