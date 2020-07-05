@@ -16,9 +16,11 @@ public class InputConnector extends Connector {
 
     @Override
     public void disconnectPatch() {
-        this.outputPatch.outputConnector = null;
-        this.outputPatch = null;
-        this.connected = false;
+        if (this.outputPatch != null) {
+            this.outputPatch.outputConnector = null;
+            this.outputPatch = null;
+            this.connected = false;
+        }
     }
 
 }
