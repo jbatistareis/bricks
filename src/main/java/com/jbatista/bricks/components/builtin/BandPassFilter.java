@@ -15,7 +15,7 @@ public class BandPassFilter extends FilterModule {
 
         controllers.add(new Controller(
                 "Center Freq.", "Sets the center frequency",
-                1, 2000, 0.005, 1, Controller.Curve.LINEAR,
+                20, 20000, 0.005, 1, Controller.Curve.EXPONENTIAL,
                 bandPass::setCenterFrequency));
 
         controllers.add(new Controller(

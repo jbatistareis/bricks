@@ -15,7 +15,7 @@ public class LowPassFilter extends FilterModule {
 
         controllers.add(new Controller(
                 "Frequency", "Sets the frequency cutoff",
-                1, 2000, 0.005, 1, Controller.Curve.LINEAR,
+                20, 20000, 0.005, 1, Controller.Curve.EXPONENTIAL,
                 lowPass::setCutoffFrequency));
 
         controllers.add(new Controller(
