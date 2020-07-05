@@ -89,4 +89,8 @@ public class Controller {
         return validValues;
     }
 
+    public Curve getCurve() {
+        return curve;
+    }
+
 }
