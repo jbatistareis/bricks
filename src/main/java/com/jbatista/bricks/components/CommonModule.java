@@ -36,12 +36,24 @@ public abstract class CommonModule {
         return inputs.get(index);
     }
 
+    public List<InputConnector> getInputs() {
+        return inputs;
+    }
+
     public Connector getOutput(int index) {
         return outputs.get(index);
     }
 
+    public List<OutputConnector> getOutputs() {
+        return outputs;
+    }
+
     public Controller getController(int index) {
         return controllers.get(index);
+    }
+
+    public List<Controller> getControllers() {
+        return controllers;
     }
 
     public abstract void process();
