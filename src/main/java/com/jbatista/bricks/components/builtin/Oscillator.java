@@ -30,7 +30,6 @@ public class Oscillator extends CommonModule {
 
         inputs.add(new InputConnector("Freq.", "Receives a frequency to play"));
         inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));
-        inputs.add(new InputConnector("Pitch", "Sets small a pitch bend"));
 
         inputs.get(1).setOutputScaleCenter(1);
         inputs.get(2).setOutputScaleCenter(1);
@@ -79,8 +78,6 @@ public class Oscillator extends CommonModule {
         } else {
             frequency = inputFrequency;
         }
-
-        frequency *= Math.max(0.5, Math.min(inputs.get(1).read(), 1.5));
 
         outputs.get(0).write(inputFrequency); // frequency passthrough
 
