@@ -24,7 +24,7 @@ public class Keyboard extends CommonModule {
 
         controllers.add(new Controller(
                 "Polyphony", "Sets the polyphony level",
-                1, 6, 1, Controller.Curve.ORIGINAL,
+                1, 6, 1, 1, Controller.Curve.ORIGINAL,
                 this::setPolyphony, 1, 2, 3, 4, 5, 6));
     }
 
