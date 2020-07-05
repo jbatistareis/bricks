@@ -2,14 +2,19 @@ package com.jbatista.bricks.components.builtin;
 
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.FilterModule;
+import com.jbatista.bricks.components.InputConnector;
 import com.jbatista.bricks.filter.HighPass;
 
 public class HighPassFilter extends FilterModule {
 
     private final HighPass highPass = new HighPass();
+    private double offset;
 
     public HighPassFilter() {
         name = "High-pass filter";
+
+        inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));
+        inputs.get(1).setOutputScaleCenter(1);
 
         filter = highPass;
 
@@ -22,6 +27,16 @@ public class HighPassFilter extends FilterModule {
                 "Resonance", "Sets the resonance",
                 0, 20, 0.01, 0, Controller.Curve.LINEAR,
                 highPass::setResonance));
+    }
+
+    @Override
+    public void process() {
+        offset = inputs.get(1).read();
+        if (offset > 0) {
+            highPass.setCutoffFrequency(controllers.get(0).getDisplayValue() * offset);
+        }
+
+        super.process();
     }
 
 }

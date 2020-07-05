@@ -2,14 +2,19 @@ package com.jbatista.bricks.components.builtin;
 
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.FilterModule;
+import com.jbatista.bricks.components.InputConnector;
 import com.jbatista.bricks.filter.LowPass;
 
 public class LowPassFilter extends FilterModule {
 
     private final LowPass lowPass = new LowPass();
+    private double offset;
 
     public LowPassFilter() {
         name = "Low-pass Filter";
+
+        inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));
+        inputs.get(1).setOutputScaleCenter(1);
 
         filter = lowPass;
 
@@ -22,6 +27,16 @@ public class LowPassFilter extends FilterModule {
                 "Resonance", "Sets the resonance",
                 0, 20, 0.01, 0, Controller.Curve.LINEAR,
                 lowPass::setResonance));
+    }
+
+    @Override
+    public void process() {
+        offset = inputs.get(1).read();
+        if (offset > 0) {
+            lowPass.setCutoffFrequency(controllers.get(0).getDisplayValue() * offset);
+        }
+
+        super.process();
     }
 
 }
