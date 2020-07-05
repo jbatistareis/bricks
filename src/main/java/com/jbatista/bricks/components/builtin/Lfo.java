@@ -43,8 +43,8 @@ public class Lfo extends CommonModule {
                 this::setFrequency));
 
         controllers.add(new Controller(
-                "Wheel Amp.", "Defines the amplitude for all outputs, from 0 to their respective max.",
-                0, 1, 0.01, 1, Controller.Curve.LINEAR,
+                "Main Amp.", "Defines the amplitude for all outputs, from 0 to 2x their respective max.",
+                0, 2, 0.01, 1, Controller.Curve.LINEAR,
                 this::setMainLevel));
 
         controllers.add(new Controller(
