@@ -3,19 +3,22 @@ package com.jbatista.bricks.components.builtin;
 import com.jbatista.bricks.Clock;
 import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.Controller;
-import com.jbatista.bricks.components.InputConnector;
 import com.jbatista.bricks.components.OutputConnector;
 import com.jbatista.bricks.util.MathFunctions;
 
-public class Oscillator extends CommonModule {
+public class Lfo extends CommonModule {
     public enum Shape {SINE, SQUARE, TRIANGLE, SAWTOOTH_UP, SAWTOOTH_DOWN, WHITE_NOISE}
 
     private Shape shape;
 
     private double frequency;
     private double frequencyPeriod;
-    private double inputFrequency;
     private double previousFrequency = 0;
+
+    private double wave1Level;
+    private double wave2Level;
+    private double wave3Level;
+    private double wave4Level;
 
     private int period;
     private int periodPhase;
@@ -25,33 +28,38 @@ public class Oscillator extends CommonModule {
     private double sawIncrement;
     private double triangleIncrement;
 
-    public Oscillator() {
-        name = "Oscillator";
+    public Lfo() {
+        name = "LFO";
 
-        inputs.add(new InputConnector("Freq.", "Receives a frequency to play"));
-        inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));
-
-        inputs.get(1).setOutputScaleCenter(1);
-        inputs.get(2).setOutputScaleCenter(1);
-
-        outputs.add(new OutputConnector("Freq.", "Returns the received frequency"));
-        outputs.add(new OutputConnector("Wave", "Returns the resulting wave"));
-        outputs.add(new OutputConnector("Active", "Indicates that this oscillator is producing a signal"));
+        outputs.add(new OutputConnector("Wave 1", "Returns the resulting wave"));
+        outputs.add(new OutputConnector("Wave 2", "Returns the resulting wave"));
+        outputs.add(new OutputConnector("Wave 3", "Returns the resulting wave"));
+        outputs.add(new OutputConnector("Wave 4", "Returns the resulting wave"));
 
         controllers.add(new Controller(
                 "Frequency", "Defines a fixed frequency",
-                100, 2000, 0.005, 0.5, Controller.Curve.LINEAR,
-                this::setInputFrequency));
+                0, 100, 0.01, 0, Controller.Curve.LINEAR,
+                this::setFrequency));
 
         controllers.add(new Controller(
-                "Freq. ratio", "Inc./dec. input frequency",
-                0.5, 10, 0.1, 1, Controller.Curve.ORIGINAL,
-                inputs.get(0)::setOutputRatio));
+                "Wave 1 Amp.", "Defines the output 1 amplitude",
+                0, 1, 0.01, 1, Controller.Curve.LINEAR,
+                this::setWave1Level));
 
         controllers.add(new Controller(
-                "FM strength", "How much modulation will applied",
-                0, 1, 0.01, 0.5, Controller.Curve.ORIGINAL,
-                inputs.get(2)::setOutputScale));
+                "Wave 2 Amp.", "Defines the output 2 amplitude",
+                0, 1, 0.01, 1, Controller.Curve.LINEAR,
+                this::setWave2Level));
+
+        controllers.add(new Controller(
+                "Wave 3 Amp.", "Defines the output 3 amplitude",
+                0.5, 1, 0.01, 1, Controller.Curve.LINEAR,
+                this::setWave3Level));
+
+        controllers.add(new Controller(
+                "Wave 4 Amp.", "Defines the output 4 amplitude",
+                0.5, 1, 0.01, 1, Controller.Curve.LINEAR,
+                this::setWave4Level));
 
         controllers.add(new Controller(
                 "Shape", "Sets the wave shape",
@@ -62,25 +70,6 @@ public class Oscillator extends CommonModule {
 
     @Override
     public void process() {
-        if (inputs.get(0).isConnected()) {
-            inputFrequency = inputs.get(0).read();
-        }
-
-        if (inputFrequency > 0) {
-            outputs.get(2).write(1);
-        } else {
-            outputs.get(2).write(0);
-        }
-
-        // FM
-        if (inputs.get(1).isConnected()) {
-            frequency = inputFrequency * inputs.get(1).read();
-        } else {
-            frequency = inputFrequency;
-        }
-
-        outputs.get(0).write(inputFrequency); // frequency passthrough
-
         if (frequency != 0) {
             if (frequency != previousFrequency) {
                 frequencyPeriod = frequency / Clock.getSampleRate();
@@ -120,10 +109,16 @@ public class Oscillator extends CommonModule {
             }
 
             periodTimer();
-            outputs.get(1).write(periodValue);
+            outputs.get(0).write(periodValue * wave1Level);
+            outputs.get(1).write(periodValue * wave2Level);
+            outputs.get(2).write(periodValue * wave3Level);
+            outputs.get(3).write(periodValue * wave4Level);
         } else {
             periodAccumulator = 0;
             outputs.get(0).write(0);
+            outputs.get(1).write(0);
+            outputs.get(2).write(0);
+            outputs.get(3).write(0);
         }
     }
 
@@ -183,12 +178,28 @@ public class Oscillator extends CommonModule {
         }
     }
 
-    void setInputFrequency(double inputFrequency) {
-        this.inputFrequency = inputFrequency;
+    void setFrequency(double frequency) {
+        this.frequency = frequency;
     }
 
     public double getFrequency() {
         return frequency;
+    }
+
+    void setWave1Level(double wave1Level) {
+        this.wave1Level = wave1Level;
+    }
+
+    void setWave2Level(double wave2Level) {
+        this.wave2Level = wave2Level;
+    }
+
+    void setWave3Level(double wave3Level) {
+        this.wave3Level = wave3Level;
+    }
+
+    void setWave4Level(double wave4Level) {
+        this.wave4Level = wave4Level;
     }
 
 }
