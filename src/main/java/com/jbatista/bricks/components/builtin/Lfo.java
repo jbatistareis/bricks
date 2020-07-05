@@ -7,7 +7,7 @@ import com.jbatista.bricks.components.OutputConnector;
 import com.jbatista.bricks.util.MathFunctions;
 
 public class Lfo extends CommonModule {
-    public enum Shape {SINE, SQUARE, TRIANGLE, SAWTOOTH_UP, SAWTOOTH_DOWN, WHITE_NOISE}
+    public enum Shape {SINE, SQUARE, TRIANGLE, SAWTOOTH_UP, SAWTOOTH_DOWN}
 
     private Shape shape;
 
@@ -71,7 +71,7 @@ public class Lfo extends CommonModule {
                 "Shape", "Sets the wave shape",
                 0, 5, 1, 0, Controller.Curve.ORIGINAL,
                 this::setShape,
-                0, 1, 2, 3, 4, 5));
+                0, 1, 2, 3, 4));
     }
 
     @Override
@@ -103,10 +103,6 @@ public class Lfo extends CommonModule {
 
                 case SAWTOOTH_DOWN:
                     sawDown();
-                    break;
-
-                case WHITE_NOISE:
-                    whiteNoise();
                     break;
 
                 default:
@@ -172,10 +168,6 @@ public class Lfo extends CommonModule {
 
             case 4:
                 this.shape = Shape.SAWTOOTH_DOWN;
-                break;
-
-            case 5:
-                this.shape = Shape.WHITE_NOISE;
                 break;
 
             default:
