@@ -32,16 +32,8 @@ public abstract class CommonModule {
         return description;
     }
 
-    public Connector getInput(int index) {
-        return inputs.get(index);
-    }
-
     public List<InputConnector> getInputs() {
         return inputs;
-    }
-
-    public Connector getOutput(int index) {
-        return outputs.get(index);
     }
 
     public List<OutputConnector> getOutputs() {

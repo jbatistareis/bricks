@@ -120,7 +120,7 @@ public class EnvelopeGenerator extends CommonModule {
             stop();
         }
 
-        getOutput(0).write(currentAmplitude * getInput(0).read());
+        outputs.get(0).write(currentAmplitude * inputs.get(0).read());
     }
 
     private void checkParameters() {
