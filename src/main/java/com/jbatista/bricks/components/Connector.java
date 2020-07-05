@@ -4,6 +4,8 @@ import com.jbatista.bricks.util.MathFunctions;
 
 public abstract class Connector {
 
+    public enum Type {INPUT, OUTPUT}
+
     public enum Curve {LINEAR, SMOOTH, EXP_INCREASE, EXP_DECREASE}
 
     private final String name;
@@ -22,6 +24,8 @@ public abstract class Connector {
     private double outputScale = 0;
     private double outputScaleCenter = 0;
     private Curve scaleCurve = Curve.LINEAR;
+
+    protected Type type;
 
     boolean connected = false;
 
@@ -154,6 +158,10 @@ public abstract class Connector {
                 this.scaleCurve = Curve.LINEAR;
                 break;
         }
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public boolean isConnected() {
