@@ -1,6 +1,5 @@
 package com.jbatista.bricks.components.builtin;
 
-import com.jbatista.bricks.Clock;
 import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.OutputConnector;
@@ -38,6 +37,12 @@ public class Lfo extends CommonModule {
         outputs.add(new OutputConnector("Wave 4", "Returns the resulting wave"));
 
         controllers.add(new Controller(
+                "Shape", "Sets the wave shape",
+                0, 5, 1, 0, Controller.Curve.ORIGINAL,
+                this::setShape,
+                0, 1, 2, 3, 4));
+
+        controllers.add(new Controller(
                 "Frequency", "Defines a fixed frequency",
                 0, 100, 0.01, 0, Controller.Curve.LINEAR,
                 this::setFrequency));
@@ -66,20 +71,14 @@ public class Lfo extends CommonModule {
                 "Wave 4 Amp.", "Defines the output 4 max. amplitude",
                 0.5, 1, 0.01, 1, Controller.Curve.LINEAR,
                 this::setWave4Level));
-
-        controllers.add(new Controller(
-                "Shape", "Sets the wave shape",
-                0, 5, 1, 0, Controller.Curve.ORIGINAL,
-                this::setShape,
-                0, 1, 2, 3, 4));
     }
 
     @Override
     public void process() {
         if (frequency != 0) {
             if (frequency != previousFrequency) {
-                frequencyPeriod = frequency / Clock.getSampleRate();
-                period = (int) (Clock.getSampleRate() / frequency);
+                frequencyPeriod = frequency / SAMPLE_RATE;
+                period = (int) (SAMPLE_RATE / frequency);
                 periodPhase = period / 2;
 
                 sawIncrement = 2d / period;
@@ -178,10 +177,6 @@ public class Lfo extends CommonModule {
 
     void setFrequency(double frequency) {
         this.frequency = frequency;
-    }
-
-    public double getFrequency() {
-        return frequency;
     }
 
     void setMainLevel(double mainLevel) {

@@ -10,10 +10,11 @@ public class Keyboard extends CommonModule {
     private int indexPr;
     private int indexRl;
     private int polyphony;
-    private KeyboardNote[] pressedNotes = new KeyboardNote[]{null, null, null, null, null, null};
+    private KeyboardNote[] pressedNotes = new KeyboardNote[6];
 
     public Keyboard() {
         name = "Keyboard";
+        for (int i = 0; i < 6; i++) pressedNotes[i] = KeyboardNote.DUMMY;
 
         outputs.add(new OutputConnector("Poly 1", "Frequency output"));
         outputs.add(new OutputConnector("Poly 2", "Frequency output"));
@@ -37,20 +38,20 @@ public class Keyboard extends CommonModule {
         polyphony = (int) (value - 1);
     }
 
-    public void pressKey(KeyboardNote note) {
+    public synchronized void pressKey(KeyboardNote note) {
         for (indexPr = 0; indexPr <= polyphony; indexPr++) {
-            if (pressedNotes[indexPr] == null) {
+            if (pressedNotes[indexPr] == KeyboardNote.DUMMY) {
                 pressedNotes[indexPr] = note;
                 outputs.get(indexPr).write(note.getFrequency());
             }
         }
     }
 
-    public void releaseKey(KeyboardNote note) {
+    public synchronized void releaseKey(KeyboardNote note) {
         for (indexRl = 0; indexRl < 6; indexRl++) {
             if (pressedNotes[indexRl].getId() == note.getId()) {
-                pressedNotes[indexRl] = null;
-                outputs.get(indexPr).write(0);
+                pressedNotes[indexRl] = KeyboardNote.DUMMY;
+                outputs.get(indexPr).write(KeyboardNote.DUMMY.getFrequency());
                 break;
             }
         }

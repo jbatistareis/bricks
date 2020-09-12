@@ -16,7 +16,7 @@ public class Mixer extends CommonModule {
             inputs.add(new InputConnector("In " + (i + 1), "Receives a signal"));
             controllers.add(new Controller(
                     "Vol. " + (i + 1), "Sets the individual output volume",
-                    0, 1, 0.01, 0.5, Controller.Curve.EXPONENTIAL,
+                    0, 2, 0.01, 1, Controller.Curve.EXPONENTIAL,
                     inputs.get(i)::setOutputRatio));
         }
 
@@ -28,7 +28,7 @@ public class Mixer extends CommonModule {
         output = 0;
 
         for (int i = 0; i < 6; i++) {
-            output += inputs.get(i).read();
+            if (inputs.get(i).isConnected()) output += inputs.get(i).read();
         }
 
         outputs.get(0).write(output);

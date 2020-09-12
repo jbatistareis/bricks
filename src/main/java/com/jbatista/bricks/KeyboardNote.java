@@ -2,6 +2,8 @@ package com.jbatista.bricks;
 
 public enum KeyboardNote {
 
+    DUMMY(-1, "Dummy", 0),
+
     C_MINUS_2(0, "C-2", 4.08), C_SHARP_MINUS_2_D_FLAT_MINUS_2(1, "C#-2/Db-2", 4.33), D_MINUS_2(2, "D-2", 4.58), D_SHARP_MINUS_2_E_FLAT_MINUS_2(3, "D#-2/Eb-2", 4.86), E_MINUS_2(4, "E-2", 5.15), F_MINUS_2(5, "F-2", 5.45), F_SHARP_MINUS_2_G_FLAT_MINUS_2(6, "F#-2/Gb-2", 5.78), G_MINUS_2(7, "G-2", 6.12), G_SHARP_MINUS_2_A_FLAT_MINUS_2(8, "G#-2/Ab-2", 6.49), A_MINUS_2(9, "A-2", 6.87), A_SHARP_MINUS_2_B_FLAT_MINUS_2(10, "A#-2/Bb-2", 7.28), B_MINUS_2(11, "B-2", 7.71),
 
     C_MINUS_1(12, "C-1", 8.17), C_SHARP_MINUS_1_D_FLAT_MINUS_1(13, "C#-1/Db-1", 8.66), D_MINUS_1(14, "D-1", 9.17), D_SHARP_MINUS_1_E_FLAT_MINUS_1(15, "D#-1/Eb-1", 9.72), E_MINUS_1(16, "E-1", 10.3), F_MINUS_1(17, "F-1", 10.91), F_SHARP_MINUS_1_G_FLAT_MINUS_1(18, "F#-1/Gb-1", 11.56), G_MINUS_1(19, "G-1", 12.25), G_SHARP_MINUS_1_A_FLAT_MINUS_1(20, "G#-1/Ab-1", 12.98), A_MINUS_1(21, "A-1", 13.75), A_SHARP_MINUS_1_B_FLAT_MINUS_1(22, "A#-1/Bb-1", 14.57), B_MINUS_1(23, "B-1", 15.43),

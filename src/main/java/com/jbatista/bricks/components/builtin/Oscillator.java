@@ -1,6 +1,5 @@
 package com.jbatista.bricks.components.builtin;
 
-import com.jbatista.bricks.Clock;
 import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.InputConnector;
@@ -32,11 +31,16 @@ public class Oscillator extends CommonModule {
         inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));
 
         inputs.get(1).setOutputScaleCenter(1);
-        inputs.get(2).setOutputScaleCenter(1);
 
         outputs.add(new OutputConnector("Freq.", "Returns the received frequency"));
         outputs.add(new OutputConnector("Wave", "Returns the resulting wave"));
         outputs.add(new OutputConnector("Active", "Indicates that this oscillator is producing a signal"));
+
+        controllers.add(new Controller(
+                "Shape", "Sets the wave shape",
+                0, 5, 1, 0, Controller.Curve.ORIGINAL,
+                this::setShape,
+                0, 1, 2, 3, 4, 5));
 
         controllers.add(new Controller(
                 "Frequency", "Defines a fixed frequency",
@@ -51,20 +55,17 @@ public class Oscillator extends CommonModule {
         controllers.add(new Controller(
                 "FM str.", "How much modulation is going to be applied",
                 0, 1, 0.01, 0.5, Controller.Curve.ORIGINAL,
-                inputs.get(2)::setOutputRatio));
+                inputs.get(1)::setOutputRatio));
 
         controllers.add(new Controller(
-                "Shape", "Sets the wave shape",
-                0, 5, 1, 0, Controller.Curve.ORIGINAL,
-                this::setShape,
-                0, 1, 2, 3, 4, 5));
+                "Out Vol.", "Sets the output volume",
+                0, 2, 0.01, 0.5, Controller.Curve.LINEAR,
+                outputs.get(1)::setOutputRatio));
     }
 
     @Override
     public void process() {
-        if (inputs.get(0).isConnected()) {
-            inputFrequency = inputs.get(0).read();
-        }
+        if (inputs.get(0).isConnected()) inputFrequency = inputs.get(0).read();
 
         if (inputFrequency > 0) {
             outputs.get(2).write(1);
@@ -83,8 +84,8 @@ public class Oscillator extends CommonModule {
 
         if (frequency != 0) {
             if (frequency != previousFrequency) {
-                frequencyPeriod = frequency / Clock.getSampleRate();
-                period = (int) (Clock.getSampleRate() / frequency);
+                frequencyPeriod = frequency / SAMPLE_RATE;
+                period = (int) (SAMPLE_RATE / frequency);
                 periodPhase = period / 2;
 
                 sawIncrement = 2d / period;
@@ -185,10 +186,6 @@ public class Oscillator extends CommonModule {
 
     void setInputFrequency(double inputFrequency) {
         this.inputFrequency = inputFrequency;
-    }
-
-    public double getFrequency() {
-        return frequency;
     }
 
 }

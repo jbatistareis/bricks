@@ -1,6 +1,5 @@
 package com.jbatista.bricks.components.builtin;
 
-import com.jbatista.bricks.Clock;
 import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.InputConnector;
@@ -11,7 +10,9 @@ public class EnvelopeGenerator extends CommonModule {
 
     private enum State {ATTACK, DECAY, SUSTAIN, RELEASE, PRE_IDLE, HOLD, IDLE}
 
-    private int sampleRate;
+    private static final double[] LEVEL_TABLE = new double[128];
+    private static final double[] SPEED_TABLE = new double[128];
+    private static final int[] CONTROL_LEVELS = new int[128];
 
     private double currentTrigger;
     private double previousTrigger;
@@ -39,10 +40,6 @@ public class EnvelopeGenerator extends CommonModule {
     private int currentDecaySpeed = -1;
     private int currentSustainSpeed = -1;
     private int currentReleaseSpeed = -1;
-
-    private static double[] LEVEL_TABLE = new double[128];
-    private static double[] SPEED_TABLE = new double[128];
-    private static int[] CONTROL_LEVELS = new int[128];
 
     static {
         double index = 0;
@@ -85,28 +82,32 @@ public class EnvelopeGenerator extends CommonModule {
 
         controllers.add(new Controller(
                 "Atk. Spd.", "Attack speed",
-                0, 127, 1, 64, Controller.Curve.ORIGINAL,
+                0, 127, 1, 127, Controller.Curve.ORIGINAL,
                 this::setAttackSpeed, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Dec. Spd.", "Decay speed",
-                0, 127, 1, 64, Controller.Curve.ORIGINAL,
+                0, 127, 1, 127, Controller.Curve.ORIGINAL,
                 this::setDecaySpeed, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Sus. Spd.", "Sustain speed",
-                0, 127, 1, 64, Controller.Curve.ORIGINAL,
+                0, 127, 1, 127, Controller.Curve.ORIGINAL,
                 this::setSustainSpeed, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Rel. Spd.", "Release speed",
-                0, 127, 1, 64, Controller.Curve.ORIGINAL,
+                0, 127, 1, 127, Controller.Curve.ORIGINAL,
                 this::setReleaseSpeed, CONTROL_LEVELS));
+
+        final int stateId = stateId(State.PRE_IDLE);
+        size[stateId] = (int) (SAMPLE_RATE / 3);
+        factor[stateId] = 1d / size[stateId];
     }
 
     @Override
     public void process() {
-        currentTrigger = inputs.get(0).read();
+        currentTrigger = inputs.get(1).read();
 
         if ((currentTrigger > 0) && (currentTrigger != previousTrigger)) {
             previousTrigger = currentTrigger;
@@ -124,14 +125,6 @@ public class EnvelopeGenerator extends CommonModule {
     }
 
     private void checkParameters() {
-        if (Clock.getSampleRate() != sampleRate) {
-            sampleRate = Clock.getSampleRate();
-
-            int stateId = stateId(State.PRE_IDLE);
-            size[stateId] = sampleRate / 3;
-            factor[stateId] = 1d / size[stateId];
-        }
-
         if (currentAttackSpeed != attackSpeed) {
             changeParameters(State.ATTACK, attackSpeed);
             currentAttackSpeed = attackSpeed;
@@ -154,8 +147,8 @@ public class EnvelopeGenerator extends CommonModule {
     }
 
     private void changeParameters(State state, int speed) {
-        int stateId = stateId(state);
-        size[stateId] = (int) (SPEED_TABLE[speed] * sampleRate);
+        final int stateId = stateId(state);
+        size[stateId] = (int) (SPEED_TABLE[speed] * SAMPLE_RATE);
         factor[stateId] = 1d / size[stateId];
     }
 

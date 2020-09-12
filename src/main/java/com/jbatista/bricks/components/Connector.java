@@ -50,9 +50,7 @@ public abstract class Connector {
                 : (data < -inputClip) ? -inputClip
                 : data;
 
-        if (inputPatch != null) {
-            inputPatch.passData(inputData);
-        }
+        if (inputPatch != null) inputPatch.passData(inputData);
     }
 
     public double read() {

@@ -4,7 +4,6 @@ package com.jbatista.bricks.filter;
 abstract class Biquad implements Filter {
 
     protected double frequency = 0;
-    protected double sampleRate = 0;
     protected double gain = 0;
     protected double bandwidth = 0;
     protected double q = 0;

@@ -14,13 +14,13 @@ public class HighPassFilter extends FilterModule {
         name = "High-pass filter";
 
         inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));
-        inputs.get(1).setOutputScaleCenter(1);
+        inputs.get(0).setOutputScaleCenter(1);
 
         filter = highPass;
 
         controllers.add(new Controller(
                 "Frequency", "Sets the frequency cutoff",
-                20, 20000, 0.005, 1, Controller.Curve.EXPONENTIAL,
+                20, 20000, 0.005, 1, Controller.Curve.LINEAR,
                 highPass::setCutoffFrequency));
 
         controllers.add(new Controller(
@@ -29,17 +29,14 @@ public class HighPassFilter extends FilterModule {
                 highPass::setResonance));
 
         controllers.add(new Controller(
-                "FM str.", "How much modulation is going to be applied",
-                0, 2, 0.01, 0.5, Controller.Curve.LINEAR,
+                "FM", "How much modulation is going to be applied",
+                0.1, 10, 0.1, 0, Controller.Curve.ORIGINAL,
                 inputs.get(1)::setOutputRatio));
     }
 
     @Override
     public void process() {
-        offset = inputs.get(1).read();
-        if (offset > 0) {
-            highPass.setCutoffFrequency(controllers.get(0).getDisplayValue() * offset);
-        }
+        highPass.setCutoffFrequency(controllers.get(0).getDisplayValue() * inputs.get(0).read());
 
         super.process();
     }

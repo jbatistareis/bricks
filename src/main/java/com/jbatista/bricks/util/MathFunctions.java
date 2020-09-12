@@ -41,9 +41,7 @@ public class MathFunctions {
     }
 
     public static void primitiveTo16bit(boolean bigEndian, byte[] buffer, int bufferIndex, int value) {
-        if (buffer.length < 2) {
-            throw new IllegalArgumentException("Buffer size must be of at least 2");
-        }
+        if (buffer.length < 2) throw new IllegalArgumentException("Buffer size must be of at least 2");
 
         if (bigEndian) {
             buffer[bufferIndex + 0] = (byte) (value >> 8);
@@ -55,9 +53,7 @@ public class MathFunctions {
     }
 
     public static void primitiveTo24bit(boolean bigEndian, byte[] buffer, int bufferIndex, long value) {
-        if (buffer.length < 3) {
-            throw new IllegalArgumentException("Buffer size must be of at least 3");
-        }
+        if (buffer.length < 3) throw new IllegalArgumentException("Buffer size must be of at least 3");
 
         if (bigEndian) {
             buffer[bufferIndex + 0] = (byte) (value >> 16);
@@ -71,9 +67,7 @@ public class MathFunctions {
     }
 
     public static void primitiveTo32bit(boolean bigEndian, byte[] buffer, int bufferIndex, long value) {
-        if (buffer.length < 4) {
-            throw new IllegalArgumentException("Buffer size must be of at least 4");
-        }
+        if (buffer.length < 4) throw new IllegalArgumentException("Buffer size must be of at least 4");
 
         if (bigEndian) {
             buffer[bufferIndex + 0] = (byte) (value >> 24);

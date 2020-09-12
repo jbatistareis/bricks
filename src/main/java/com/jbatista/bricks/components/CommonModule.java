@@ -7,6 +7,8 @@ import java.util.List;
 
 public abstract class CommonModule {
 
+    protected static final double SAMPLE_RATE = 44100;
+
     protected String name;
     protected String description;
 
@@ -32,8 +34,16 @@ public abstract class CommonModule {
         return description;
     }
 
+    public InputConnector getInput(int index) {
+        return inputs.get(index);
+    }
+
     public List<InputConnector> getInputs() {
         return inputs;
+    }
+
+    public OutputConnector getOutput(int index) {
+        return outputs.get(index);
     }
 
     public List<OutputConnector> getOutputs() {

@@ -14,13 +14,13 @@ public class BandPassFilter extends FilterModule {
         name = "Band-pass filter";
 
         inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));
-        inputs.get(1).setOutputScaleCenter(1);
+        inputs.get(0).setOutputScaleCenter(1);
 
         filter = bandPass;
 
         controllers.add(new Controller(
                 "Center Freq.", "Sets the center frequency",
-                20, 20000, 0.005, 1, Controller.Curve.EXPONENTIAL,
+                20, 20000, 0.005, 1, Controller.Curve.LINEAR,
                 bandPass::setCenterFrequency));
 
         controllers.add(new Controller(
@@ -29,17 +29,14 @@ public class BandPassFilter extends FilterModule {
                 bandPass::setQ));
 
         controllers.add(new Controller(
-                "FM str.", "How much modulation is going to be applied",
-                0, 2, 0.01, 0.5, Controller.Curve.LINEAR,
+                "FM", "How much modulation is going to be applied",
+                0.1, 10, 0.1, 0, Controller.Curve.ORIGINAL,
                 inputs.get(1)::setOutputRatio));
     }
 
     @Override
     public void process() {
-        offset = inputs.get(1).read();
-        if (offset > 0) {
-            bandPass.setCenterFrequency(controllers.get(0).getDisplayValue() * offset);
-        }
+        bandPass.setCenterFrequency(controllers.get(0).getDisplayValue() * inputs.get(0).read());
 
         super.process();
     }

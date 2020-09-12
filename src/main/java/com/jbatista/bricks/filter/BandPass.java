@@ -1,6 +1,5 @@
 package com.jbatista.bricks.filter;
 
-import com.jbatista.bricks.Clock;
 import com.jbatista.bricks.util.MathFunctions;
 
 /**
@@ -35,7 +34,7 @@ public class BandPass extends Biquad {
 
     @Override
     protected void calculateCoefficients() {
-        omega = MathFunctions.TAU * frequency / Clock.getSampleRate();
+        omega = MathFunctions.TAU * frequency / sampleRate;
         sin = Math.sin(omega);
         cos = Math.cos(omega);
         alpha = sin / (2 * q);
