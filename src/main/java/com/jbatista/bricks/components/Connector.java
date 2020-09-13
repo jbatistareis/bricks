@@ -2,8 +2,6 @@ package com.jbatista.bricks.components;
 
 public abstract class Connector {
 
-    public enum Type {INPUT, OUTPUT}
-
     private final String name;
     private final String description;
 
@@ -11,15 +9,10 @@ public abstract class Connector {
     protected Patch outputPatch = null;
 
     private double inputData = 0;
-    private double outputData = 0;
 
-    private double inputClip = 0;
-    private double outputClip = 0;
     private double outputRatio = 1;
 
     private double outputScaleCenter = 0;
-
-    protected Type type;
 
     boolean connected = false;
 
@@ -45,39 +38,13 @@ public abstract class Connector {
     public abstract void disconnectPatch();
 
     public void write(double data) {
-        inputData = (inputClip == 0) ? data
-                : (data > inputClip) ? inputClip
-                : (data < -inputClip) ? -inputClip
-                : data;
+        inputData = data;
 
-        if (inputPatch != null) inputPatch.passData(inputData);
+        if (inputPatch != null) inputPatch.passData();
     }
 
     public double read() {
-        outputData = inputData;
-
-        return (((outputClip == 0) ? outputData
-                : (outputData > outputClip) ? outputClip
-                : (outputData < -outputClip) ? -outputClip
-                : outputData)
-                + outputScaleCenter)
-                * outputRatio;
-    }
-
-    public double getInputClip() {
-        return inputClip;
-    }
-
-    public void setInputClip(double inputClip) {
-        this.inputClip = Math.max(0, Math.min(inputClip, 127));
-    }
-
-    public double getOutputClip() {
-        return outputClip;
-    }
-
-    public void setOutputClip(double outputClip) {
-        this.outputClip = Math.max(0, Math.min(outputClip, 127));
+        return (inputData + outputScaleCenter) * outputRatio;
     }
 
     public double getOutputRatio() {
@@ -85,7 +52,7 @@ public abstract class Connector {
     }
 
     public void setOutputRatio(double outputRatio) {
-        this.outputRatio = Math.max(0, Math.min(outputRatio, 127));
+        this.outputRatio = outputRatio;
     }
 
     public double getOutputScaleCenter() {
@@ -93,11 +60,7 @@ public abstract class Connector {
     }
 
     public void setOutputScaleCenter(double outputScaleCenter) {
-        this.outputScaleCenter = Math.max(0, Math.min(outputScaleCenter, 127));
-    }
-
-    public Type getType() {
-        return type;
+        this.outputScaleCenter = Math.max(-2, Math.min(outputScaleCenter, 2));
     }
 
     public boolean isConnected() {

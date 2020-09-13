@@ -13,10 +13,9 @@ public class Patch {
         return outputConnector;
     }
 
-    void passData(double inputData) {
-        if ((inputConnector != null) && (outputConnector != null)) {
-            outputConnector.write(inputData);
-        }
+    void passData() {
+        if ((inputConnector != null) && (outputConnector != null))
+            outputConnector.write(inputConnector.read());
     }
 
 }

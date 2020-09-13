@@ -67,18 +67,16 @@ public class Oscillator extends CommonModule {
     public void process() {
         if (inputs.get(0).isConnected()) inputFrequency = inputs.get(0).read();
 
-        if (inputFrequency > 0) {
+        if (inputFrequency > 0)
             outputs.get(2).write(1);
-        } else {
+        else
             outputs.get(2).write(0);
-        }
 
         // FM
-        if (inputs.get(1).isConnected()) {
+        if (inputs.get(1).isConnected())
             frequency = inputFrequency * inputs.get(1).read();
-        } else {
+        else
             frequency = inputFrequency;
-        }
 
         outputs.get(0).write(inputFrequency); // frequency passthrough
 
@@ -124,7 +122,7 @@ public class Oscillator extends CommonModule {
             outputs.get(1).write(periodValue);
         } else {
             periodAccumulator = 0;
-            outputs.get(0).write(0);
+            outputs.get(1).write(0);
         }
     }
 

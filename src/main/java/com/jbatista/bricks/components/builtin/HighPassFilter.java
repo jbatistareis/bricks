@@ -25,7 +25,7 @@ public class HighPassFilter extends FilterModule {
 
         controllers.add(new Controller(
                 "Resonance", "Sets the resonance",
-                0, 20, 0.01, 0, Controller.Curve.LINEAR,
+                1, 20, 0.01, 0, Controller.Curve.LINEAR,
                 highPass::setResonance));
 
         controllers.add(new Controller(
@@ -36,7 +36,8 @@ public class HighPassFilter extends FilterModule {
 
     @Override
     public void process() {
-        highPass.setCutoffFrequency(controllers.get(0).getDisplayValue() * inputs.get(0).read());
+        if (inputs.get(1).isConnected())
+            highPass.setCutoffFrequency(highPass.getCutoffFrequency() * inputs.get(1).read());
 
         super.process();
     }

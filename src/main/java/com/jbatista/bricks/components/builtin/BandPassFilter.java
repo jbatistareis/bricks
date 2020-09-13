@@ -25,7 +25,7 @@ public class BandPassFilter extends FilterModule {
 
         controllers.add(new Controller(
                 "Quality", "Sets the filter quality factor",
-                0, 20, 0.01, 0, Controller.Curve.LINEAR,
+                1, 20, 0.01, 0, Controller.Curve.LINEAR,
                 bandPass::setQ));
 
         controllers.add(new Controller(
@@ -36,7 +36,8 @@ public class BandPassFilter extends FilterModule {
 
     @Override
     public void process() {
-        bandPass.setCenterFrequency(controllers.get(0).getDisplayValue() * inputs.get(0).read());
+        if (inputs.get(1).isConnected())
+            bandPass.setCenterFrequency(bandPass.getCenterFrequency() * inputs.get(1).read());
 
         super.process();
     }

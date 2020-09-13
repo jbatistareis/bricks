@@ -30,8 +30,8 @@ public class Controller {
         this.validValues = validValues;
         this.curve = curve;
         this.callback = callback;
-        Arrays.sort(this.validValues);
 
+        Arrays.sort(this.validValues);
         setValue(value);
     }
 

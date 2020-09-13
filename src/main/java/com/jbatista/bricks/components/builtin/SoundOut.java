@@ -9,6 +9,7 @@ import com.jbatista.bricks.util.MathFunctions;
 public class SoundOut extends CommonModule {
 
     private double sample;
+    private double outputRatio;
 
     public SoundOut() {
         name = "Sound Output";
@@ -17,13 +18,13 @@ public class SoundOut extends CommonModule {
 
         controllers.add(new Controller(
                 "Vol.", "Output volume",
-                0, 1, 0.01, 1, Controller.Curve.EXPONENTIAL,
-                inputs.get(0)::setOutputRatio));
+                0, 2, 0.01, 0.5, Controller.Curve.LINEAR,
+                this::setOutputRatio));
     }
 
     @Override
     public void process() {
-        sample = inputs.get(0).read();
+        sample = inputs.get(0).read() * outputRatio;
     }
 
     public void get16bitFrame(boolean bigEndian, byte[] buffer) {
@@ -32,6 +33,10 @@ public class SoundOut extends CommonModule {
         // [L] - [R]
         MathFunctions.primitiveTo16bit(bigEndian, buffer, 0, (int) (sample * MathFunctions.SIGNED_16_BIT_MAX));
         MathFunctions.primitiveTo16bit(bigEndian, buffer, 2, (int) (sample * MathFunctions.SIGNED_16_BIT_MAX));
+    }
+
+    private void setOutputRatio(double outputRatio) {
+        this.outputRatio = outputRatio;
     }
 
     public void getDoubleFrame(double[] buffer) {
