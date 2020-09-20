@@ -14,14 +14,10 @@ public class Keyboard extends CommonModule {
 
     public Keyboard() {
         name = "Keyboard";
-        for (int i = 0; i < 6; i++) pressedNotes[i] = KeyboardNote.DUMMY;
-
-        outputs.add(new OutputConnector("Poly 1", "Frequency output"));
-        outputs.add(new OutputConnector("Poly 2", "Frequency output"));
-        outputs.add(new OutputConnector("Poly 3", "Frequency output"));
-        outputs.add(new OutputConnector("Poly 4", "Frequency output"));
-        outputs.add(new OutputConnector("Poly 5", "Frequency output"));
-        outputs.add(new OutputConnector("Poly 6", "Frequency output"));
+        for (int i = 0; i < 6; i++) {
+            pressedNotes[i] = KeyboardNote.DUMMY;
+            outputs.add(new OutputConnector("Poly " + (i + 1), "Frequency output"));
+        }
 
         controllers.add(new Controller(
                 "Polyphony", "Sets the polyphony level",
