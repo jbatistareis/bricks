@@ -1,5 +1,6 @@
 package com.jbatista.bricks.components.builtin;
 
+import com.jbatista.bricks.Instrument;
 import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.InputConnector;
 import com.jbatista.bricks.components.OutputConnector;
@@ -9,7 +10,9 @@ public class Passthrough extends CommonModule {
     private int index = 0;
     private double input;
 
-    public Passthrough() {
+    public Passthrough(Instrument instrument) {
+        super(instrument);
+
         name = "Passthrough";
 
         inputs.add(new InputConnector("In", "Receives a signal, and passes it to all outputs, unchanged"));

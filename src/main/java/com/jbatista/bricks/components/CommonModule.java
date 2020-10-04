@@ -1,13 +1,13 @@
 package com.jbatista.bricks.components;
 
-import com.jbatista.bricks.Clock;
+import com.jbatista.bricks.Instrument;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CommonModule {
 
-    protected static final double SAMPLE_RATE = 44100;
+    private final Instrument instrument;
 
     protected String name;
     protected String description;
@@ -16,14 +16,15 @@ public abstract class CommonModule {
     protected final List<OutputConnector> outputs = new ArrayList<>();
     protected final List<Controller> controllers = new ArrayList<>();
 
-    public CommonModule() {
-        Clock.addModule(this);
+    public CommonModule(Instrument instrument) {
+        this.instrument = instrument;
+        this.instrument.addModule(this);
     }
 
     public void remove() {
         inputs.forEach(input -> input.disconnectPatch());
         outputs.forEach(output -> output.disconnectPatch());
-        Clock.removeModule(this);
+        instrument.removeModule(this);
     }
 
     public String getName() {

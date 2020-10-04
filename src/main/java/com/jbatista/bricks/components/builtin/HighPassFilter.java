@@ -1,5 +1,6 @@
 package com.jbatista.bricks.components.builtin;
 
+import com.jbatista.bricks.Instrument;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.FilterModule;
 import com.jbatista.bricks.components.InputConnector;
@@ -10,7 +11,9 @@ public class HighPassFilter extends FilterModule {
     private final HighPass highPass = new HighPass();
     private double offset;
 
-    public HighPassFilter() {
+    public HighPassFilter(Instrument instrument) {
+        super(instrument);
+
         name = "High-pass filter";
 
         inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));

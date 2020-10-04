@@ -1,5 +1,6 @@
 package com.jbatista.bricks.components.builtin;
 
+import com.jbatista.bricks.Instrument;
 import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.InputConnector;
@@ -9,7 +10,9 @@ public class Mixer extends CommonModule {
 
     private double output;
 
-    public Mixer() {
+    public Mixer(Instrument instrument) {
+        super(instrument);
+
         name = "Mixer";
 
         for (int i = 0; i < 6; i++) {

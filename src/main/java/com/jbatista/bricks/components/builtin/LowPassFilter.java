@@ -1,5 +1,6 @@
 package com.jbatista.bricks.components.builtin;
 
+import com.jbatista.bricks.Instrument;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.FilterModule;
 import com.jbatista.bricks.components.InputConnector;
@@ -10,7 +11,9 @@ public class LowPassFilter extends FilterModule {
     private final LowPass lowPass = new LowPass();
     private double offset;
 
-    public LowPassFilter() {
+    public LowPassFilter(Instrument instrument) {
+        super(instrument);
+
         name = "Low-pass Filter";
 
         inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));

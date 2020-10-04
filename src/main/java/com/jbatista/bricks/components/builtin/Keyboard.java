@@ -1,5 +1,6 @@
 package com.jbatista.bricks.components.builtin;
 
+import com.jbatista.bricks.Instrument;
 import com.jbatista.bricks.KeyboardNote;
 import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.Controller;
@@ -12,7 +13,9 @@ public class Keyboard extends CommonModule {
     private int polyphony;
     private KeyboardNote[] pressedNotes = new KeyboardNote[6];
 
-    public Keyboard() {
+    public Keyboard(Instrument instrument) {
+        super(instrument);
+
         name = "Keyboard";
         for (int i = 0; i < 6; i++) {
             pressedNotes[i] = KeyboardNote.DUMMY;

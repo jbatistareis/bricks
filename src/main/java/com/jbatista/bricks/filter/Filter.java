@@ -1,8 +1,8 @@
 package com.jbatista.bricks.filter;
 
-public interface Filter {
+import com.jbatista.bricks.Instrument;
 
-    double sampleRate = 44100;
+public interface Filter {
 
     double apply(double sample);
 

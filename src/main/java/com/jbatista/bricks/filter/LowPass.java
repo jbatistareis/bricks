@@ -1,5 +1,6 @@
 package com.jbatista.bricks.filter;
 
+import com.jbatista.bricks.Instrument;
 import com.jbatista.bricks.util.MathFunctions;
 
 /**
@@ -34,7 +35,7 @@ public class LowPass extends Biquad {
 
     @Override
     protected void calculateCoefficients() {
-        omega = MathFunctions.TAU * frequency / sampleRate;
+        omega = MathFunctions.TAU * frequency / Instrument.SAMPLE_RATE;
         sin = Math.sin(omega);
         cos = Math.cos(omega);
         alpha = sin / (2 * q);

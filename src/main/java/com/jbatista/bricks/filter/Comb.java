@@ -1,5 +1,7 @@
 package com.jbatista.bricks.filter;
 
+import com.jbatista.bricks.Instrument;
+
 /**
  * <p>Based on the <i>'Physical Audio Signal Processing: For Virtual Musical Instruments and Audio Effects'</i> by Julius Orion Smith.</p>
  *
@@ -34,7 +36,7 @@ public class Comb implements Filter {
      */
     public void setDuration(double duration) {
         this.duration = Math.max(0.01, Math.min(duration, 1));
-        this.samples = (int) (sampleRate * this.duration);
+        this.samples = (int) (Instrument.SAMPLE_RATE * this.duration);
     }
 
     public int getTaps() {

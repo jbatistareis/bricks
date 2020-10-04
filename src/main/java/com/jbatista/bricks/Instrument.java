@@ -5,25 +5,27 @@ import com.jbatista.bricks.components.CommonModule;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Clock {
+public class Instrument {
 
-    private static int index;
+    public static final double SAMPLE_RATE = 44100;
 
-    private static final List<CommonModule> MODULES = new ArrayList<>();
-    private static int MODULES_SIZE = 0;
+    private int index;
 
-    public synchronized static void tick() {
+    private final List<CommonModule> MODULES = new ArrayList<>();
+    private int MODULES_SIZE = 0;
+
+    public synchronized void runProcess() {
         for (index = 0; index < MODULES_SIZE; index++) MODULES.get(index).process();
     }
 
-    public synchronized static void addModule(CommonModule module) {
+    public synchronized void addModule(CommonModule module) {
         if (!MODULES.contains(module)) {
             MODULES.add(module);
             MODULES_SIZE = MODULES.size();
         }
     }
 
-    public synchronized static void removeModule(CommonModule module) {
+    public synchronized void removeModule(CommonModule module) {
         if (MODULES.contains(module)) {
             MODULES.remove(module);
             MODULES_SIZE = MODULES.size();

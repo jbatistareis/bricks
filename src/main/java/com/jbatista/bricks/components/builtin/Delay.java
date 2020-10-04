@@ -1,5 +1,6 @@
 package com.jbatista.bricks.components.builtin;
 
+import com.jbatista.bricks.Instrument;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.FilterModule;
 import com.jbatista.bricks.filter.Comb;
@@ -8,7 +9,9 @@ public class Delay extends FilterModule {
 
     private final Comb comb = new Comb();
 
-    public Delay() {
+    public Delay(Instrument instrument) {
+        super(instrument);
+
         name = "Delay";
 
         filter = new Comb();

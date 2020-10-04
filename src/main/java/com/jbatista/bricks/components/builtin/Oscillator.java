@@ -1,30 +1,26 @@
 package com.jbatista.bricks.components.builtin;
 
+import com.jbatista.bricks.Instrument;
 import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.InputConnector;
 import com.jbatista.bricks.components.OutputConnector;
-import com.jbatista.bricks.util.MathFunctions;
+import com.jbatista.bricks.util.GeneralPurposeOscillator;
 
 public class Oscillator extends CommonModule {
     public enum Shape {SINE, SQUARE, TRIANGLE, SAWTOOTH_UP, SAWTOOTH_DOWN, WHITE_NOISE}
 
     private Shape shape;
+    private final GeneralPurposeOscillator generalPurposeOscillator = new GeneralPurposeOscillator();
 
     private double frequency;
-    private double frequencyPeriod;
     private double inputFrequency;
     private double previousFrequency = 0;
 
-    private int period;
-    private int periodPhase;
-    private int periodAccumulator;
-    private double periodValue;
+    public Oscillator(Instrument instrument) {
+        super(instrument);
+        generalPurposeOscillator.setSampleRate(Instrument.SAMPLE_RATE);
 
-    private double sawIncrement;
-    private double triangleIncrement;
-
-    public Oscillator() {
         name = "Oscillator";
 
         inputs.add(new InputConnector("Freq.", "Receives a frequency to play"));
@@ -82,76 +78,42 @@ public class Oscillator extends CommonModule {
 
         if (frequency != 0) {
             if (frequency != previousFrequency) {
-                frequencyPeriod = frequency / SAMPLE_RATE;
-                period = (int) (SAMPLE_RATE / frequency);
-                periodPhase = period / 2;
-
-                sawIncrement = 2d / period;
-                triangleIncrement = 2d / periodPhase;
-
+                generalPurposeOscillator.setFrequency(frequency);
                 previousFrequency = frequency;
             }
 
             switch (shape) {
                 case SQUARE:
-                    square();
+                    generalPurposeOscillator.square();
                     break;
 
                 case TRIANGLE:
-                    triangle();
+                    generalPurposeOscillator.triangle();
                     break;
 
                 case SAWTOOTH_UP:
-                    sawUp();
+                    generalPurposeOscillator.sawUp();
                     break;
 
                 case SAWTOOTH_DOWN:
-                    sawDown();
+                    generalPurposeOscillator.sawDown();
                     break;
 
                 case WHITE_NOISE:
-                    whiteNoise();
+                    generalPurposeOscillator.whiteNoise();
                     break;
 
                 default:
-                    sine();
+                    generalPurposeOscillator.sine();
                     break;
             }
 
-            periodTimer();
-            outputs.get(1).write(periodValue);
+            generalPurposeOscillator.advancePeriod();
+            outputs.get(1).write(generalPurposeOscillator.getPeriodValue());
         } else {
-            periodAccumulator = 0;
+            generalPurposeOscillator.reset();
             outputs.get(1).write(0);
         }
-    }
-
-    private void sine() {
-        periodValue = Math.sin(MathFunctions.TAU * frequencyPeriod * periodAccumulator);
-    }
-
-    private void square() {
-        periodValue = (periodAccumulator < periodPhase) ? 1 : -1;
-    }
-
-    private void triangle() {
-        periodValue = (periodAccumulator == 0) ? -1 : (periodAccumulator < periodPhase) ? (periodValue + triangleIncrement) : (periodValue - triangleIncrement);
-    }
-
-    private void sawUp() {
-        periodValue = (periodAccumulator == 0) ? -1 : (periodValue + sawIncrement);
-    }
-
-    private void sawDown() {
-        periodValue = (periodAccumulator == 0) ? 1 : (periodValue - sawIncrement);
-    }
-
-    private void whiteNoise() {
-        periodValue = 2 * MathFunctions.RANDOM.nextDouble() - 1;
-    }
-
-    private void periodTimer() {
-        periodAccumulator = (periodAccumulator < period) ? (periodAccumulator + 1) : 0;
     }
 
     private void setShape(double shape) {

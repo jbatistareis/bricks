@@ -1,6 +1,6 @@
 package com.jbatista.bricks.components.builtin;
 
-import com.jbatista.bricks.Clock;
+import com.jbatista.bricks.Instrument;
 import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.InputConnector;
@@ -11,7 +11,9 @@ public class SoundOut extends CommonModule {
     private double sample;
     private double outputRatio;
 
-    public SoundOut() {
+    public SoundOut(Instrument instrument) {
+        super(instrument);
+
         name = "Sound Output";
 
         inputs.add(new InputConnector("In", "Receives a signal"));

@@ -1,5 +1,6 @@
 package com.jbatista.bricks.components.builtin;
 
+import com.jbatista.bricks.Instrument;
 import com.jbatista.bricks.components.CommonModule;
 import com.jbatista.bricks.components.Controller;
 import com.jbatista.bricks.components.InputConnector;
@@ -51,7 +52,8 @@ public class EnvelopeGenerator extends CommonModule {
         }
     }
 
-    public EnvelopeGenerator() {
+    public EnvelopeGenerator(Instrument instrument) {
+        super(instrument);
         name = "Envelope generator";
 
         inputs.add(new InputConnector("In", "The sound signal that will receive AM"));
@@ -101,7 +103,7 @@ public class EnvelopeGenerator extends CommonModule {
                 this::setReleaseSpeed, CONTROL_LEVELS));
 
         final int stateId = stateId(State.PRE_IDLE);
-        size[stateId] = (int) (SAMPLE_RATE / 3);
+        size[stateId] = (int) (Instrument.SAMPLE_RATE / 3);
         factor[stateId] = 1d / size[stateId];
     }
 
@@ -148,7 +150,7 @@ public class EnvelopeGenerator extends CommonModule {
 
     private void changeParameters(State state, int speed) {
         final int stateId = stateId(state);
-        size[stateId] = (int) (SPEED_TABLE[speed] * SAMPLE_RATE);
+        size[stateId] = (int) (SPEED_TABLE[speed] * Instrument.SAMPLE_RATE);
         factor[stateId] = 1d / size[stateId];
     }
 
