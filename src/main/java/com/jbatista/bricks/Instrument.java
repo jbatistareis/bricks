@@ -11,24 +11,24 @@ public class Instrument {
 
     private int index;
 
-    private final List<CommonModule> MODULES = new ArrayList<>();
+    private final List<CommonModule> modules = new ArrayList<>();
     private int MODULES_SIZE = 0;
 
     public synchronized void runProcess() {
-        for (index = 0; index < MODULES_SIZE; index++) MODULES.get(index).process();
+        for (index = 0; index < MODULES_SIZE; index++) modules.get(index).process();
     }
 
     public synchronized void addModule(CommonModule module) {
-        if (!MODULES.contains(module)) {
-            MODULES.add(module);
-            MODULES_SIZE = MODULES.size();
+        if (!modules.contains(module)) {
+            modules.add(module);
+            MODULES_SIZE = modules.size();
         }
     }
 
     public synchronized void removeModule(CommonModule module) {
-        if (MODULES.contains(module)) {
-            MODULES.remove(module);
-            MODULES_SIZE = MODULES.size();
+        if (modules.contains(module)) {
+            modules.remove(module);
+            MODULES_SIZE = modules.size();
         }
     }
 
