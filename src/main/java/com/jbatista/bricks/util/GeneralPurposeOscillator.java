@@ -1,7 +1,5 @@
 package com.jbatista.bricks.util;
 
-import com.jbatista.bricks.Instrument;
-
 public class GeneralPurposeOscillator {
 
     private double sampleRate = 1;
@@ -36,7 +34,7 @@ public class GeneralPurposeOscillator {
         this.frequency = frequency;
 
         frequencyPeriod = this.frequency / sampleRate;
-        period = (int) (Instrument.SAMPLE_RATE / this.frequency);
+        period = (int) (sampleRate / this.frequency);
         periodPhase = period / 2;
 
         sawIncrement = 2d / period;
