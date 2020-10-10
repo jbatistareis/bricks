@@ -35,6 +35,11 @@ public class Keyboard extends CommonModule {
 
     private void setPolyphony(double value) {
         polyphony = (int) (value - 1);
+
+        for (indexRl = 0; indexRl < 6; indexRl++) {
+            pressedNotes[indexRl] = KeyboardNote.DUMMY;
+            outputs.get(indexPr).write(KeyboardNote.DUMMY.getFrequency());
+        }
     }
 
     public synchronized void pressKey(KeyboardNote note) {
@@ -48,9 +53,9 @@ public class Keyboard extends CommonModule {
 
     public synchronized void releaseKey(KeyboardNote note) {
         for (indexRl = 0; indexRl < 6; indexRl++) {
-            if (pressedNotes[indexRl].getId() == note.getId()) {
+            if (pressedNotes[indexRl] == note) {
                 pressedNotes[indexRl] = KeyboardNote.DUMMY;
-                outputs.get(indexPr).write(KeyboardNote.DUMMY.getFrequency());
+                outputs.get(indexPr).write(0);
                 break;
             }
         }
