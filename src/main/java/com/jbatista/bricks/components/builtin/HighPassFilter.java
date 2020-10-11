@@ -9,22 +9,21 @@ import com.jbatista.bricks.filter.HighPass;
 public class HighPassFilter extends FilterModule {
 
     private final HighPass highPass = new HighPass();
-    private double offset;
+    private double currentFrequency;
 
     public HighPassFilter(Instrument instrument) {
         super(instrument);
 
         name = "High-pass filter";
 
-        inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));
-        inputs.get(0).setOutputScaleCenter(1);
+        inputs.add(new InputConnector("Gate", "Control gate for FM"));
 
         filter = highPass;
 
         controllers.add(new Controller(
                 "Frequency", "Sets the frequency cutoff",
                 20, 20000, 0.005, 1, Controller.Curve.LINEAR,
-                highPass::setCutoffFrequency));
+                this::setCurrentFrequency));
 
         controllers.add(new Controller(
                 "Resonance", "Sets the resonance",
@@ -33,16 +32,21 @@ public class HighPassFilter extends FilterModule {
 
         controllers.add(new Controller(
                 "FM", "How much modulation is going to be applied",
-                0.1, 10, 0.1, 0, Controller.Curve.ORIGINAL,
+                0, 1, 0.01, 1, Controller.Curve.ORIGINAL,
                 inputs.get(1)::setOutputRatio));
     }
 
     @Override
     public void process() {
         if (inputs.get(1).isConnected())
-            highPass.setCutoffFrequency(highPass.getCutoffFrequency() * inputs.get(1).read());
+            highPass.setCutoffFrequency(currentFrequency * inputs.get(1).read());
 
         super.process();
+    }
+
+    private void setCurrentFrequency(double frequency) {
+        this.currentFrequency = frequency;
+        highPass.setCutoffFrequency(frequency);
     }
 
 }
