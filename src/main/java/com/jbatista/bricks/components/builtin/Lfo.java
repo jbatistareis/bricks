@@ -25,6 +25,7 @@ public class Lfo extends CommonModule {
 
     public Lfo(Instrument instrument) {
         super(instrument);
+        generalPurposeOscillator.setSampleRate(Instrument.SAMPLE_RATE);
 
         name = "LFO";
 
