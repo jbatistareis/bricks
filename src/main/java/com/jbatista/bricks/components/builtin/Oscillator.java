@@ -50,7 +50,7 @@ public class Oscillator extends CommonModule {
 
         controllers.add(new Controller(
                 "FM str.", "How much modulation is going to be applied",
-                0, 1, 0.01, 0.5, Controller.Curve.ORIGINAL,
+                0, 1, 0.01, 1, Controller.Curve.ORIGINAL,
                 inputs.get(1)::setOutputRatio));
 
         controllers.add(new Controller(
