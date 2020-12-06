@@ -44,7 +44,7 @@ public abstract class Connector {
     }
 
     public double read() {
-        return (inputData + outputScaleCenter) * outputRatio;
+        return inputData * outputRatio + outputScaleCenter;
     }
 
     public double getOutputRatio() {
