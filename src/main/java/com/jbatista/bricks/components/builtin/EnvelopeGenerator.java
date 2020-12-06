@@ -44,11 +44,11 @@ public class EnvelopeGenerator extends CommonModule {
 
     static {
         double index = 0;
-        for (int i = 0; i < 128; i++) {
+        for (int i = 0; i < 200; i++) {
             LEVEL_TABLE[i] = MathFunctions.expIncreaseInterpolation(0, 1, index, 5);
             SPEED_TABLE[i] = MathFunctions.expDecreaseInterpolation(30, 0.0001, index, 5);
             CONTROL_LEVELS[i] = i;
-            index += 0.0078125;
+            index += 0.005;
         }
     }
 
@@ -63,43 +63,43 @@ public class EnvelopeGenerator extends CommonModule {
 
         controllers.add(new Controller(
                 "Atk. Lvl.", "Attack amplitude level",
-                0, 127, 1, 127, Controller.Curve.ORIGINAL,
+                0, 200, 0.01, 1, Controller.Curve.LINEAR,
                 this::setAttackLevel, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Dec. Lvl.", "Decay amplitude level",
-                0, 127, 1, 127, Controller.Curve.ORIGINAL,
+                0, 200, 0.01, 1, Controller.Curve.LINEAR,
                 this::setDecayLevel, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Sus. Lvl.", "Sustain amplitude level",
-                0, 127, 1, 127, Controller.Curve.ORIGINAL,
+                0, 200, 0.01, 1, Controller.Curve.LINEAR,
                 this::setSustainLevel, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Rel. Lvl.", "Release amplitude level",
-                0, 127, 1, 0, Controller.Curve.ORIGINAL,
+                0, 200, 0.01, 1, Controller.Curve.LINEAR,
                 this::setReleaseLevel, CONTROL_LEVELS));
 
 
         controllers.add(new Controller(
                 "Atk. Spd.", "Attack speed",
-                0, 127, 1, 127, Controller.Curve.ORIGINAL,
+                0, 200, 0.01, 1, Controller.Curve.LINEAR,
                 this::setAttackSpeed, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Dec. Spd.", "Decay speed",
-                0, 127, 1, 127, Controller.Curve.ORIGINAL,
+                0, 200, 0.01, 1, Controller.Curve.LINEAR,
                 this::setDecaySpeed, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Sus. Spd.", "Sustain speed",
-                0, 127, 1, 127, Controller.Curve.ORIGINAL,
+                0, 200, 0.01, 1, Controller.Curve.LINEAR,
                 this::setSustainSpeed, CONTROL_LEVELS));
 
         controllers.add(new Controller(
                 "Rel. Spd.", "Release speed",
-                0, 127, 1, 127, Controller.Curve.ORIGINAL,
+                0, 200, 0.01, 1, Controller.Curve.LINEAR,
                 this::setReleaseSpeed, CONTROL_LEVELS));
 
         final int stateId = stateId(State.PRE_IDLE);
