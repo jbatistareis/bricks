@@ -13,7 +13,6 @@ public class EnvelopeGenerator extends CommonModule {
 
     private static final double[] LEVEL_TABLE = new double[200];
     private static final double[] SPEED_TABLE = new double[200];
-    private static final int[] CONTROL_LEVELS = new int[200];
 
     private double currentTrigger;
     private double previousTrigger;
@@ -46,8 +45,7 @@ public class EnvelopeGenerator extends CommonModule {
         double index = 0;
         for (int i = 0; i < 200; i++) {
             LEVEL_TABLE[i] = MathFunctions.expIncreaseInterpolation(0, 1, index, 3);
-            SPEED_TABLE[i] = MathFunctions.expDecreaseInterpolation(30, 0.0001, index, 3);
-            CONTROL_LEVELS[i] = i;
+            SPEED_TABLE[i] = MathFunctions.expDecreaseInterpolation(20, 0.0001, index, 3);
             index += 0.005;
         }
     }
@@ -103,7 +101,7 @@ public class EnvelopeGenerator extends CommonModule {
                 this::setReleaseSpeed));
 
         final int stateId = stateId(State.PRE_IDLE);
-        size[stateId] = (int) (Instrument.SAMPLE_RATE / 3);
+        size[stateId] = (int) (Instrument.SAMPLE_RATE / 15);
         factor[stateId] = 1d / size[stateId];
     }
 
@@ -218,9 +216,9 @@ public class EnvelopeGenerator extends CommonModule {
             currentAmplitude = MathFunctions.linearInterpolation(startAmplitude, endAmplitude, progress);
 
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     private void stop() {
