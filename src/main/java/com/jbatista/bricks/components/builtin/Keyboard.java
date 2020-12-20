@@ -55,7 +55,7 @@ public class Keyboard extends CommonModule {
         for (indexRl = 0; indexRl < 6; indexRl++) {
             if (pressedNotes[indexRl] == note) {
                 pressedNotes[indexRl] = KeyboardNote.DUMMY;
-                outputs.get(indexPr).write(0);
+                outputs.get(indexRl).write(0);
                 break;
             }
         }
