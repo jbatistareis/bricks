@@ -47,6 +47,8 @@ public class Keyboard extends CommonModule {
             if (pressedNotes[indexPr] == KeyboardNote.DUMMY) {
                 pressedNotes[indexPr] = note;
                 outputs.get(indexPr).write(note.getFrequency());
+
+                break;
             }
         }
     }
