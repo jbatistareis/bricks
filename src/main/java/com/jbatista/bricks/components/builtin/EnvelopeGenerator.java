@@ -45,8 +45,8 @@ public class EnvelopeGenerator extends CommonModule {
     static {
         double index = 0;
         for (int i = 0; i < 200; i++) {
-            LEVEL_TABLE[i] = MathFunctions.expIncreaseInterpolation(0, 1, index, 5);
-            SPEED_TABLE[i] = MathFunctions.expDecreaseInterpolation(30, 0.0001, index, 5);
+            LEVEL_TABLE[i] = MathFunctions.expIncreaseInterpolation(0, 1, index, 3);
+            SPEED_TABLE[i] = MathFunctions.expDecreaseInterpolation(30, 0.0001, index, 3);
             CONTROL_LEVELS[i] = i;
             index += 0.005;
         }
@@ -64,43 +64,43 @@ public class EnvelopeGenerator extends CommonModule {
         controllers.add(new Controller(
                 "Atk. Lvl.", "Attack amplitude level",
                 0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setAttackLevel, CONTROL_LEVELS));
+                this::setAttackLevel));
 
         controllers.add(new Controller(
                 "Dec. Lvl.", "Decay amplitude level",
                 0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setDecayLevel, CONTROL_LEVELS));
+                this::setDecayLevel));
 
         controllers.add(new Controller(
                 "Sus. Lvl.", "Sustain amplitude level",
                 0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setSustainLevel, CONTROL_LEVELS));
+                this::setSustainLevel));
 
         controllers.add(new Controller(
                 "Rel. Lvl.", "Release amplitude level",
                 0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setReleaseLevel, CONTROL_LEVELS));
+                this::setReleaseLevel));
 
 
         controllers.add(new Controller(
                 "Atk. Spd.", "Attack speed",
                 0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setAttackSpeed, CONTROL_LEVELS));
+                this::setAttackSpeed));
 
         controllers.add(new Controller(
                 "Dec. Spd.", "Decay speed",
                 0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setDecaySpeed, CONTROL_LEVELS));
+                this::setDecaySpeed));
 
         controllers.add(new Controller(
                 "Sus. Spd.", "Sustain speed",
                 0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setSustainSpeed, CONTROL_LEVELS));
+                this::setSustainSpeed));
 
         controllers.add(new Controller(
                 "Rel. Spd.", "Release speed",
                 0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setReleaseSpeed, CONTROL_LEVELS));
+                this::setReleaseSpeed));
 
         final int stateId = stateId(State.PRE_IDLE);
         size[stateId] = (int) (Instrument.SAMPLE_RATE / 3);
@@ -116,12 +116,12 @@ public class EnvelopeGenerator extends CommonModule {
 
             checkParameters();
             initialize();
-        } else if ((currentTrigger > 0) && (currentTrigger == previousTrigger)) {
-            advanceEnvelope();
         } else if ((currentTrigger == 0) && (currentTrigger != previousTrigger)) {
             previousTrigger = currentTrigger;
             stop();
         }
+
+        advanceEnvelope();
 
         outputs.get(0).write(currentAmplitude * inputs.get(0).read());
     }
@@ -203,8 +203,7 @@ public class EnvelopeGenerator extends CommonModule {
                 break;
 
             case IDLE:
-                // do nothing
-                break;
+                return; // do nothing
         }
 
         int stateId = stateId(state);
