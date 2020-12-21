@@ -32,7 +32,7 @@ public class LowPassFilter extends FilterModule {
 
         controllers.add(new Controller(
                 "FM", "How much modulation is going to be applied",
-                0, 1, 0.01, 1, Controller.Curve.ORIGINAL,
+                0, 2, 0.01, 0.5, Controller.Curve.ORIGINAL,
                 inputs.get(1)::setOutputRatio));
     }
 
