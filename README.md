@@ -21,9 +21,10 @@ This library imitates modules and patches used to create a modular synthesizer.
 Combine the various modules on the [builtin](https://github.com/jbatistareis/bricks/tree/master/src/main/java/com/jbatista/bricks/components/builtin) package, connecting then [patches](https://github.com/jbatistareis/bricks/blob/master/src/main/java/com/jbatista/bricks/components/Patch.java), to build a synthesizer.
 
 
-## Example
-*TBA*
+## Example  
+See [VSynth 1](https://github.com/jbatistareis/vsynth1) for a fairly complex use case on the [InstrumentBoard](https://github.com/jbatistareis/vsynth1/blob/master/core/src/com/jbatista/vsynth/components/modules/InstrumentBoard.java) class.  
 ```java
+// TODO
 ```
 
 
