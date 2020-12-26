@@ -10,6 +10,7 @@ public class BandPassFilter extends FilterModule {
 
     private final BandPass bandPass = new BandPass();
     private double currentFrequency;
+    private boolean opening;
 
     public BandPassFilter(Instrument instrument) {
         super(instrument);
@@ -31,15 +32,17 @@ public class BandPassFilter extends FilterModule {
                 bandPass::setQ));
 
         controllers.add(new Controller(
-                "FM", "How much modulation is going to be applied",
-                0, 1, 0.01, 1, Controller.Curve.ORIGINAL,
-                inputs.get(1)::setOutputRatio));
+                "Gate dir.", "Controls if gate is opening or closing",
+                0, 1, 1, 0, Controller.Curve.ORIGINAL,
+                value -> opening = (value == 0),
+                0, 1));
     }
 
     @Override
     public void process() {
         if (inputs.get(1).isConnected())
-            bandPass.setCenterFrequency(currentFrequency * inputs.get(1).read());
+            bandPass.setCenterFrequency(
+                    Math.min(currentFrequency * (opening ? inputs.get(1).read() : (1 - inputs.get(1).read())), 20000));
 
         super.process();
     }
