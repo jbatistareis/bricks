@@ -43,22 +43,32 @@ public class Keyboard extends CommonModule {
     }
 
     public synchronized void pressKey(KeyboardNote note) {
-        for (indexPr = 0; indexPr <= polyphony; indexPr++) {
-            if (pressedNotes[indexPr] == KeyboardNote.DUMMY) {
-                pressedNotes[indexPr] = note;
-                outputs.get(indexPr).write(note.getFrequency());
+        if (polyphony == 0) {
+            pressedNotes[0] = note;
+            outputs.get(0).write(note.getFrequency());
+        } else {
+            for (indexPr = 0; indexPr <= polyphony; indexPr++) {
+                if (pressedNotes[indexPr] == KeyboardNote.DUMMY) {
+                    pressedNotes[indexPr] = note;
+                    outputs.get(indexPr).write(note.getFrequency());
 
-                break;
+                    break;
+                }
             }
         }
     }
 
     public synchronized void releaseKey(KeyboardNote note) {
-        for (indexRl = 0; indexRl < 6; indexRl++) {
-            if (pressedNotes[indexRl] == note) {
-                pressedNotes[indexRl] = KeyboardNote.DUMMY;
-                outputs.get(indexRl).write(0);
-                break;
+        if (polyphony == 0) {
+            pressedNotes[0] = KeyboardNote.DUMMY;
+            outputs.get(0).write(0);
+        } else {
+            for (indexRl = 0; indexRl < 6; indexRl++) {
+                if (pressedNotes[indexRl] == note) {
+                    pressedNotes[indexRl] = KeyboardNote.DUMMY;
+                    outputs.get(indexRl).write(0);
+                    break;
+                }
             }
         }
     }
