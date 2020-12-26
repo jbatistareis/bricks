@@ -44,8 +44,8 @@ public class EnvelopeGenerator extends CommonModule {
     static {
         double index = 0;
         for (int i = 0; i < 200; i++) {
-            LEVEL_TABLE[i] = MathFunctions.expIncreaseInterpolation(0, 1, index, 3);
-            SPEED_TABLE[i] = MathFunctions.expDecreaseInterpolation(20, 0.0001, index, 3);
+            LEVEL_TABLE[i] = MathFunctions.linearInterpolation(0, 1, index);
+            SPEED_TABLE[i] = MathFunctions.linearInterpolation(2, 0.0001, index);
             index += 0.005;
         }
     }
