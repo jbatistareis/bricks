@@ -13,6 +13,8 @@ public class Keyboard extends CommonModule {
     private int polyphony;
     private KeyboardNote[] pressedNotes = new KeyboardNote[6];
 
+    private int freeSlot = 0;
+
     public Keyboard(Instrument instrument) {
         super(instrument);
 
@@ -43,32 +45,19 @@ public class Keyboard extends CommonModule {
     }
 
     public synchronized void pressKey(KeyboardNote note) {
-        if (polyphony == 0) {
-            pressedNotes[0] = note;
-            outputs.get(0).write(note.getFrequency());
-        } else {
-            for (indexPr = 0; indexPr <= polyphony; indexPr++) {
-                if (pressedNotes[indexPr] == KeyboardNote.DUMMY) {
-                    pressedNotes[indexPr] = note;
-                    outputs.get(indexPr).write(note.getFrequency());
+        pressedNotes[freeSlot] = note;
+        outputs.get(freeSlot).write(note.getFrequency());
 
-                    break;
-                }
-            }
-        }
+        freeSlot = (freeSlot == polyphony) ? 0 : (freeSlot + 1);
     }
 
     public synchronized void releaseKey(KeyboardNote note) {
-        if (polyphony == 0) {
-            pressedNotes[0] = KeyboardNote.DUMMY;
-            outputs.get(0).write(0);
-        } else {
-            for (indexRl = 0; indexRl < 6; indexRl++) {
-                if (pressedNotes[indexRl] == note) {
-                    pressedNotes[indexRl] = KeyboardNote.DUMMY;
-                    outputs.get(indexRl).write(0);
-                    break;
-                }
+        for (indexRl = 0; indexRl < 6; indexRl++) {
+            if (pressedNotes[indexRl] == note) {
+                pressedNotes[indexRl] = KeyboardNote.DUMMY;
+                outputs.get(indexRl).write(0);
+                freeSlot = indexRl;
+                break;
             }
         }
     }

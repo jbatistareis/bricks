@@ -26,6 +26,8 @@ public class EnvelopeGenerator extends CommonModule {
     private final double[] factor = new double[5];
     private final int[] size = new int[5];
 
+    private double input;
+
     private int attackLevel;
     private int decayLevel;
     private int sustainLevel;
@@ -112,16 +114,18 @@ public class EnvelopeGenerator extends CommonModule {
         if ((currentTrigger > 0) && (currentTrigger != previousTrigger)) {
             previousTrigger = currentTrigger;
 
-            checkParameters();
             initialize();
         } else if ((currentTrigger == 0) && (currentTrigger != previousTrigger)) {
             previousTrigger = currentTrigger;
-            stop();
+            release();
         }
 
         advanceEnvelope();
 
-        outputs.get(0).write(currentAmplitude * inputs.get(0).read());
+        input = inputs.get(0).read();
+
+        if (input != 0)
+            outputs.get(0).write(currentAmplitude * input);
     }
 
     private void checkParameters() {
@@ -221,7 +225,7 @@ public class EnvelopeGenerator extends CommonModule {
         return true;
     }
 
-    private void stop() {
+    private void release() {
         if (state != State.RELEASE) {
             position = 0;
             progress = 0;
@@ -265,6 +269,7 @@ public class EnvelopeGenerator extends CommonModule {
         progress = 0;
 
         startAmplitude = 0;
+        currentAmplitude = 0;
         endAmplitude = LEVEL_TABLE[attackLevel];
 
         state = State.ATTACK;
