@@ -8,6 +8,7 @@ import com.jbatista.bricks.components.OutputConnector;
 
 public class Keyboard extends CommonModule {
 
+    private int index;
     private int indexPr;
     private int indexRl;
     private int polyphony;
@@ -32,34 +33,37 @@ public class Keyboard extends CommonModule {
 
     @Override
     public void process() {
-        // not used
+        for (index = 0; index < 6; index++)
+            outputs.get(index).write(pressedNotes[index].getFrequency());
     }
 
     private void setPolyphony(double value) {
         polyphony = (int) (value - 1);
 
-        for (indexRl = 0; indexRl < 6; indexRl++) {
+        for (indexRl = 0; indexRl < 6; indexRl++)
             pressedNotes[indexRl] = KeyboardNote.DUMMY;
-            outputs.get(indexPr).write(KeyboardNote.DUMMY.getFrequency());
-        }
     }
 
     public synchronized void pressKey(KeyboardNote note) {
-        pressedNotes[freeSlot] = note;
-        outputs.get(freeSlot).write(note.getFrequency());
-
-        freeSlot = (freeSlot == polyphony) ? 0 : (freeSlot + 1);
+        if (polyphony == 0)
+            pressedNotes[0] = note;
+        else
+            for (indexPr = 0; indexPr <= polyphony; indexPr++)
+                if (pressedNotes[indexPr] == KeyboardNote.DUMMY) {
+                    pressedNotes[indexPr] = note;
+                    break;
+                }
     }
 
     public synchronized void releaseKey(KeyboardNote note) {
-        for (indexRl = 0; indexRl < 6; indexRl++) {
-            if (pressedNotes[indexRl] == note) {
-                pressedNotes[indexRl] = KeyboardNote.DUMMY;
-                outputs.get(indexRl).write(0);
-                freeSlot = indexRl;
-                break;
-            }
-        }
+        if (polyphony == 0)
+            pressedNotes[0] = KeyboardNote.DUMMY;
+        else
+            for (indexRl = 0; indexRl <= polyphony; indexRl++)
+                if (pressedNotes[indexRl] == note) {
+                    pressedNotes[indexRl] = KeyboardNote.DUMMY;
+                    break;
+                }
     }
 
 }
