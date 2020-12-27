@@ -9,7 +9,19 @@ import com.jbatista.bricks.util.MathFunctions;
 
 public class EnvelopeGenerator extends CommonModule {
 
-    private enum State {ATTACK, DECAY, SUSTAIN, RELEASE, PRE_IDLE, HOLD, IDLE}
+    private enum State {
+        ATTACK(0), DECAY(1), SUSTAIN(2), RELEASE(3), PRE_IDLE(4), HOLD(5), IDLE(6);
+
+        private int id;
+
+        State(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
 
     private static final double[] LEVEL_TABLE = new double[200];
     private static final double[] SPEED_TABLE = new double[200];
@@ -46,8 +58,8 @@ public class EnvelopeGenerator extends CommonModule {
     static {
         double index = 0;
         for (int i = 0; i < 200; i++) {
-            LEVEL_TABLE[i] = MathFunctions.linearInterpolation(0, 1, index);
-            SPEED_TABLE[i] = MathFunctions.linearInterpolation(2, 0.0001, index);
+            LEVEL_TABLE[i] = MathFunctions.linearInterpolation(0.0025, 1, index);
+            SPEED_TABLE[i] = MathFunctions.linearInterpolation(2, 0.0025, index);
             index += 0.005;
         }
     }
@@ -102,9 +114,8 @@ public class EnvelopeGenerator extends CommonModule {
                 0, 199, 0.01, 1, Controller.Curve.LINEAR,
                 this::setReleaseSpeed));
 
-        final int stateId = stateId(State.PRE_IDLE);
-        size[stateId] = (int) (Instrument.SAMPLE_RATE / 15);
-        factor[stateId] = 1d / size[stateId];
+        size[State.PRE_IDLE.getId()] = (int) (Instrument.SAMPLE_RATE / 120);
+        factor[State.PRE_IDLE.getId()] = 1d / size[State.PRE_IDLE.getId()];
     }
 
     @Override
@@ -151,9 +162,10 @@ public class EnvelopeGenerator extends CommonModule {
     }
 
     private void changeParameters(State state, int speed) {
-        final int stateId = stateId(state);
-        size[stateId] = (int) (SPEED_TABLE[speed] * Instrument.SAMPLE_RATE);
-        factor[stateId] = 1d / size[stateId];
+        size[state.getId()] = (int) Math.max(
+                size[State.PRE_IDLE.getId()],
+                SPEED_TABLE[speed] * Instrument.SAMPLE_RATE);
+        factor[state.getId()] = 1d / size[state.getId()];
     }
 
     private void advanceEnvelope() {
@@ -208,15 +220,14 @@ public class EnvelopeGenerator extends CommonModule {
                 return; // do nothing
         }
 
-        int stateId = stateId(state);
-        if (stateId <= 4) {
+        if (state.getId() <= 4) {
             position += 1;
-            progress += factor[stateId];
+            progress += factor[state.getId()];
         }
     }
 
     private boolean applyEnvelope(State state) {
-        if (position < size[stateId(state)]) {
+        if (position < size[state.getId()]) {
             currentAmplitude = MathFunctions.linearInterpolation(startAmplitude, endAmplitude, progress);
 
             return false;
@@ -273,27 +284,6 @@ public class EnvelopeGenerator extends CommonModule {
         endAmplitude = LEVEL_TABLE[attackLevel];
 
         state = State.ATTACK;
-    }
-
-    private int stateId(State state) {
-        switch (state) {
-            case ATTACK:
-                return 0;
-            case DECAY:
-                return 1;
-            case SUSTAIN:
-                return 2;
-            case RELEASE:
-                return 3;
-            case PRE_IDLE:
-                return 4;
-            case HOLD:
-                return 5;
-            case IDLE:
-                return 6;
-            default:
-                return -1;
-        }
     }
 
 
