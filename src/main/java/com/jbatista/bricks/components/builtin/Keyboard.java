@@ -34,34 +34,42 @@ public class Keyboard extends CommonModule {
     @Override
     public void process() {
         for (index = 0; index < 6; index++)
-            outputs.get(index).write(pressedNotes[index].getFrequency());
+            outputs.get(index).write(getPressedNote(index).getFrequency());
     }
 
     private void setPolyphony(double value) {
         polyphony = (int) (value - 1);
 
         for (indexRl = 0; indexRl < 6; indexRl++)
-            pressedNotes[indexRl] = KeyboardNote.DUMMY;
+            setPressedNote(indexRl, KeyboardNote.DUMMY);
+    }
+
+    private synchronized KeyboardNote getPressedNote(int index) {
+        return pressedNotes[index];
+    }
+
+    private synchronized void setPressedNote(int index, KeyboardNote note) {
+        pressedNotes[index] = note;
     }
 
     public synchronized void pressKey(KeyboardNote note) {
         if (polyphony == 0)
-            pressedNotes[0] = note;
+            setPressedNote(0, note);
         else
             for (indexPr = 0; indexPr <= polyphony; indexPr++)
-                if (pressedNotes[indexPr] == KeyboardNote.DUMMY) {
-                    pressedNotes[indexPr] = note;
+                if (getPressedNote(indexPr) == KeyboardNote.DUMMY) {
+                    setPressedNote(indexPr, note);
                     break;
                 }
     }
 
     public synchronized void releaseKey(KeyboardNote note) {
         if (polyphony == 0)
-            pressedNotes[0] = KeyboardNote.DUMMY;
+            setPressedNote(0, KeyboardNote.DUMMY);
         else
             for (indexRl = 0; indexRl <= polyphony; indexRl++)
-                if (pressedNotes[indexRl] == note) {
-                    pressedNotes[indexRl] = KeyboardNote.DUMMY;
+                if (getPressedNote(indexRl) == note) {
+                    setPressedNote(indexRl, KeyboardNote.DUMMY);
                     break;
                 }
     }

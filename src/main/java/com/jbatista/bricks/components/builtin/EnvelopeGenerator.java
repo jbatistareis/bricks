@@ -38,7 +38,9 @@ public class EnvelopeGenerator extends CommonModule {
     private final double[] factor = new double[5];
     private final int[] size = new int[5];
 
-    private double input;
+    private double previousInput;
+    private double currentInput;
+    private boolean hold;
 
     private int attackLevel;
     private int decayLevel;
@@ -114,6 +116,12 @@ public class EnvelopeGenerator extends CommonModule {
                 0, 199, 0.01, 1, Controller.Curve.LINEAR,
                 this::setReleaseSpeed));
 
+        controllers.add(new Controller(
+                "Hold input", "Holds input values that are different from 0",
+                0, 1, 1, 0, Controller.Curve.ORIGINAL,
+                value -> hold = (value == 1),
+                0, 1));
+
         size[State.PRE_IDLE.getId()] = (int) (Instrument.SAMPLE_RATE / 120);
         factor[State.PRE_IDLE.getId()] = 1d / size[State.PRE_IDLE.getId()];
     }
@@ -121,22 +129,19 @@ public class EnvelopeGenerator extends CommonModule {
     @Override
     public void process() {
         currentTrigger = inputs.get(1).read();
-
-        if ((currentTrigger > 0) && (currentTrigger != previousTrigger)) {
-            previousTrigger = currentTrigger;
-
+        if ((currentTrigger > 0) && (currentTrigger != previousTrigger))
             initialize();
-        } else if ((currentTrigger == 0) && (currentTrigger != previousTrigger)) {
-            previousTrigger = currentTrigger;
+        else if ((currentTrigger == 0) && (currentTrigger != previousTrigger))
             release();
-        }
+        previousTrigger = currentTrigger;
 
+        currentInput = inputs.get(0).read();
+        if (hold && (currentInput == 0))
+            currentInput = previousInput;
+        previousInput = currentInput;
+
+        outputs.get(0).write(currentAmplitude * currentInput);
         advanceEnvelope();
-
-        input = inputs.get(0).read();
-
-        if (input != 0)
-            outputs.get(0).write(currentAmplitude * input);
     }
 
     private void checkParameters() {
