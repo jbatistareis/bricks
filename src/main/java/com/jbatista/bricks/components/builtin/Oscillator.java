@@ -55,7 +55,7 @@ public class Oscillator extends CommonModule {
 
         controllers.add(new Controller(
                 "Out Vol.", "Sets the output volume",
-                0, 2, 0.01, 0.5, Controller.Curve.LINEAR,
+                0, 10, 0.01, 0.5, Controller.Curve.LINEAR,
                 outputs.get(1)::setOutputRatio));
     }
 
