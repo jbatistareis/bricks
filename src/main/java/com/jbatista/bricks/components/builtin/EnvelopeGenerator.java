@@ -41,6 +41,7 @@ public class EnvelopeGenerator extends CommonModule {
     private double previousInput;
     private double currentInput;
     private boolean hold;
+    private boolean released = false;
 
     private int attackLevel;
     private int decayLevel;
@@ -132,7 +133,7 @@ public class EnvelopeGenerator extends CommonModule {
         if ((currentTrigger > 0) && (currentTrigger != previousTrigger))
             initialize();
         else if ((currentTrigger == 0) && (currentTrigger != previousTrigger))
-            release();
+            released = true;
         previousTrigger = currentTrigger;
 
         currentInput = inputs.get(0).read();
@@ -195,30 +196,31 @@ public class EnvelopeGenerator extends CommonModule {
                     startAmplitude = LEVEL_TABLE[decayLevel];
                     endAmplitude = LEVEL_TABLE[sustainLevel];
 
-                    state = State.SUSTAIN;
+                    if (released)
+                        release();
+                    else
+                        state = State.SUSTAIN;
                 }
                 break;
 
             case SUSTAIN:
-                if (applyEnvelope(State.SUSTAIN)) {
-                    state = State.HOLD;
-                }
+                if (released) {
+                    release();
+                    return;
+                } else if (applyEnvelope(State.SUSTAIN)) state = State.HOLD;
                 break;
 
             case HOLD:
-                // do noting
+                if (released) release();
                 break;
 
             case RELEASE:
-                if (applyEnvelope(State.RELEASE)) {
-                    silence();
-                }
+                released = false;
+                if (applyEnvelope(State.RELEASE)) silence();
                 break;
 
             case PRE_IDLE:
-                if (applyEnvelope(State.PRE_IDLE)) {
-                    reset();
-                }
+                if (applyEnvelope(State.PRE_IDLE)) reset();
                 break;
 
             case IDLE:
