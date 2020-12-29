@@ -196,10 +196,8 @@ public class EnvelopeGenerator extends CommonModule {
                     startAmplitude = LEVEL_TABLE[decayLevel];
                     endAmplitude = LEVEL_TABLE[sustainLevel];
 
-                    if (released)
-                        release();
-                    else
-                        state = State.SUSTAIN;
+                    if (released) release();
+                    else state = State.SUSTAIN;
                 }
                 break;
 

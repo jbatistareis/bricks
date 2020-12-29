@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 public class Controller {
 
-    public enum Curve {ORIGINAL, LINEAR, EXPONENTIAL}
+    public enum Curve {ORIGINAL, LINEAR, EXP_INCREASE, EXP_DECREASE, SMOOTH}
 
     private final String name;
     private final String description;
@@ -67,8 +67,16 @@ public class Controller {
                 displayValue = MathFunctions.linearInterpolation(min, max, value);
                 break;
 
-            case EXPONENTIAL:
-                displayValue = MathFunctions.expIncreaseInterpolation(min, max, value, 5);
+            case EXP_INCREASE:
+                displayValue = MathFunctions.expIncreaseInterpolation(min, max, value, 3);
+                break;
+
+            case EXP_DECREASE:
+                displayValue = MathFunctions.expDecreaseInterpolation(min, max, value, 3);
+                break;
+
+            case SMOOTH:
+                displayValue = MathFunctions.smoothInterpolation(min, max, value);
                 break;
         }
 
