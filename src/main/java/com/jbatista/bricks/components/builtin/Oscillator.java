@@ -14,7 +14,6 @@ public class Oscillator extends CommonModule {
     private final GeneralPurposeOscillator generalPurposeOscillator = new GeneralPurposeOscillator();
 
     private double frequency;
-    private double inputFrequency;
     private double previousFrequency = 0;
 
     public Oscillator(Instrument instrument) {
@@ -41,7 +40,7 @@ public class Oscillator extends CommonModule {
         controllers.add(new Controller(
                 "Frequency", "Defines a fixed frequency",
                 100, 2000, 0.005, 0.5, Controller.Curve.LINEAR,
-                this::setInputFrequency));
+                inputs.get(0)::write));
 
         controllers.add(new Controller(
                 "Freq. ratio", "Inc./dec. input frequency",
@@ -61,22 +60,12 @@ public class Oscillator extends CommonModule {
 
     @Override
     public void process() {
-        if (inputs.get(0).isConnected()) inputFrequency = inputs.get(0).read();
+        frequency = inputs.get(0).read();
+        outputs.get(0).write(frequency); // frequency passthrough
 
-        if (inputFrequency > 0)
+        if (frequency > 0) {
             outputs.get(2).write(1);
-        else
-            outputs.get(2).write(0);
 
-        // FM
-        if (inputs.get(1).isConnected())
-            frequency = inputFrequency * inputs.get(1).read();
-        else
-            frequency = inputFrequency;
-
-        outputs.get(0).write(inputFrequency); // frequency passthrough
-
-        if (frequency != 0) {
             if (frequency != previousFrequency) {
                 generalPurposeOscillator.setFrequency(frequency);
                 previousFrequency = frequency;
@@ -84,35 +73,32 @@ public class Oscillator extends CommonModule {
 
             switch (shape) {
                 case SQUARE:
-                    generalPurposeOscillator.square();
+                    outputs.get(1).write(generalPurposeOscillator.square(inputs.get(1).read()));
                     break;
 
                 case TRIANGLE:
-                    generalPurposeOscillator.triangle();
+                    outputs.get(1).write(generalPurposeOscillator.triangle(inputs.get(1).read()));
                     break;
 
                 case SAWTOOTH_UP:
-                    generalPurposeOscillator.sawUp();
+                    outputs.get(1).write(generalPurposeOscillator.sawUp(inputs.get(1).read()));
                     break;
 
                 case SAWTOOTH_DOWN:
-                    generalPurposeOscillator.sawDown();
+                    outputs.get(1).write(generalPurposeOscillator.sawDown(inputs.get(1).read()));
                     break;
 
                 case WHITE_NOISE:
-                    generalPurposeOscillator.whiteNoise();
+                    outputs.get(1).write(generalPurposeOscillator.whiteNoise());
                     break;
 
                 default:
-                    generalPurposeOscillator.sine();
+                    outputs.get(1).write(generalPurposeOscillator.sine(inputs.get(1).read()));
                     break;
             }
-
-            generalPurposeOscillator.advancePeriod();
-            outputs.get(1).write(generalPurposeOscillator.getPeriodValue());
         } else {
-            generalPurposeOscillator.reset();
             outputs.get(1).write(0);
+            outputs.get(2).write(0);
         }
     }
 
@@ -142,10 +128,6 @@ public class Oscillator extends CommonModule {
                 this.shape = Shape.SINE;
                 break;
         }
-    }
-
-    void setInputFrequency(double inputFrequency) {
-        this.inputFrequency = inputFrequency;
     }
 
 }

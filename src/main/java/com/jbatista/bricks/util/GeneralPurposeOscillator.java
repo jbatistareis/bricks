@@ -4,15 +4,9 @@ public class GeneralPurposeOscillator {
 
     private double sampleRate = 1;
     private double frequency = 1;
-    private double frequencyPeriod;
+    private double period = 1;
 
-    private int period;
-    private int periodPhase;
     private int periodAccumulator = 0;
-    private double periodValue;
-
-    private double sawIncrement;
-    private double triangleIncrement;
 
     public GeneralPurposeOscillator() {
         setFrequency(1);
@@ -32,49 +26,40 @@ public class GeneralPurposeOscillator {
 
     public void setFrequency(double frequency) {
         this.frequency = frequency;
-
-        frequencyPeriod = this.frequency / sampleRate;
-        period = (int) (sampleRate / this.frequency);
-        periodPhase = period / 2;
-
-        sawIncrement = 2d / period;
-        triangleIncrement = 2d / periodPhase;
-    }
-
-    public double getPeriodValue() {
-        return periodValue;
+        period = this.frequency / sampleRate;
+        reset();
     }
 
     public void reset() {
         periodAccumulator = 0;
     }
 
-    public void sine() {
-        periodValue = Math.sin(MathFunctions.TAU * frequencyPeriod * periodAccumulator);
+    public double sine(double modulation) {
+        return Math.sin(phase() + modulation);
     }
 
-    public void square() {
-        periodValue = (periodAccumulator < periodPhase) ? 1 : -1;
+    public double square(double modulation) {
+        return Math.signum(Math.sin(phase() + modulation));
     }
 
-    public void triangle() {
-        periodValue = (periodAccumulator == 0) ? -1 : (periodAccumulator < periodPhase) ? (periodValue + triangleIncrement) : (periodValue - triangleIncrement);
+    public double triangle(double modulation) {
+        return Math.abs(((phase() + modulation) % 6) - 3) * 0.6668 - 1;
     }
 
-    public void sawUp() {
-        periodValue = (periodAccumulator == 0) ? -1 : (periodValue + sawIncrement);
+    public double sawUp(double modulation) {
+        return (((phase() + modulation) % MathFunctions.TAU) / MathFunctions.PI) - 1;
     }
 
-    public void sawDown() {
-        periodValue = (periodAccumulator == 0) ? 1 : (periodValue - sawIncrement);
+    public double sawDown(double modulation) {
+        return -(((phase() + modulation) % MathFunctions.TAU) / MathFunctions.PI) + 1;
     }
 
-    public void whiteNoise() {
-        periodValue = 2 * MathFunctions.RANDOM.nextDouble() - 1;
+    public double whiteNoise() {
+        return 2 * MathFunctions.RANDOM.nextDouble() - 1;
     }
 
-    public void advancePeriod() {
-        periodAccumulator = (periodAccumulator < period) ? (periodAccumulator + 1) : 0;
+    private double phase() {
+        return MathFunctions.TAU * period * periodAccumulator++;
     }
 
 }

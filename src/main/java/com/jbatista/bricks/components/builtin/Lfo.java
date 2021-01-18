@@ -43,32 +43,32 @@ public class Lfo extends CommonModule {
         controllers.add(new Controller(
                 "Frequency", "Defines a fixed frequency",
                 0, 100, 0.01, 0, Controller.Curve.LINEAR,
-                this::setFrequency));
+                value -> this.frequency = value));
 
         controllers.add(new Controller(
                 "Main Amp.", "Defines the amplitude for all outputs, from 0 to 2x their respective max.",
                 0, 2, 0.01, 0.5, Controller.Curve.LINEAR,
-                this::setMainLevel));
+                value -> this.mainLevel = value));
 
         controllers.add(new Controller(
                 "Wave 1 Amp.", "Defines the output 1 max. amplitude",
                 0, 1, 0.01, 1, Controller.Curve.LINEAR,
-                this::setWave1Level));
+                value -> this.wave1Level = value));
 
         controllers.add(new Controller(
                 "Wave 2 Amp.", "Defines the output 2 max. amplitude",
                 0, 1, 0.01, 1, Controller.Curve.LINEAR,
-                this::setWave2Level));
+                value -> this.wave2Level = value));
 
         controllers.add(new Controller(
                 "Wave 3 Amp.", "Defines the output 3 max. amplitude",
                 0.5, 1, 0.01, 1, Controller.Curve.LINEAR,
-                this::setWave3Level));
+                value -> this.wave3Level = value));
 
         controllers.add(new Controller(
                 "Wave 4 Amp.", "Defines the output 4 max. amplitude",
                 0.5, 1, 0.01, 1, Controller.Curve.LINEAR,
-                this::setWave4Level));
+                value -> this.wave4Level = value));
     }
 
     @Override
@@ -81,35 +81,31 @@ public class Lfo extends CommonModule {
 
             switch (shape) {
                 case SQUARE:
-                    generalPurposeOscillator.square();
+                    periodValue = generalPurposeOscillator.square(0);
                     break;
 
                 case TRIANGLE:
-                    generalPurposeOscillator.triangle();
+                    periodValue = generalPurposeOscillator.triangle(0);
                     break;
 
                 case SAWTOOTH_UP:
-                    generalPurposeOscillator.sawUp();
+                    periodValue = generalPurposeOscillator.sawUp(0);
                     break;
 
                 case SAWTOOTH_DOWN:
-                    generalPurposeOscillator.sawDown();
+                    periodValue = generalPurposeOscillator.sawDown(0);
                     break;
 
                 default:
-                    generalPurposeOscillator.sine();
+                    periodValue = generalPurposeOscillator.sine(0);
                     break;
             }
-
-            generalPurposeOscillator.advancePeriod();
-            periodValue = generalPurposeOscillator.getPeriodValue();
 
             outputs.get(0).write(periodValue * wave1Level * mainLevel);
             outputs.get(1).write(periodValue * wave2Level * mainLevel);
             outputs.get(2).write(periodValue * wave3Level * mainLevel);
             outputs.get(3).write(periodValue * wave4Level * mainLevel);
         } else {
-            generalPurposeOscillator.reset();
             outputs.get(0).write(0);
             outputs.get(1).write(0);
             outputs.get(2).write(0);
@@ -139,30 +135,6 @@ public class Lfo extends CommonModule {
                 this.shape = Shape.SINE;
                 break;
         }
-    }
-
-    void setFrequency(double frequency) {
-        this.frequency = frequency;
-    }
-
-    void setMainLevel(double mainLevel) {
-        this.mainLevel = mainLevel;
-    }
-
-    void setWave1Level(double wave1Level) {
-        this.wave1Level = wave1Level;
-    }
-
-    void setWave2Level(double wave2Level) {
-        this.wave2Level = wave2Level;
-    }
-
-    void setWave3Level(double wave3Level) {
-        this.wave3Level = wave3Level;
-    }
-
-    void setWave4Level(double wave4Level) {
-        this.wave4Level = wave4Level;
     }
 
 }
