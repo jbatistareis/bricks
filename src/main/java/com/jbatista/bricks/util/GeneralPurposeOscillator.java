@@ -39,7 +39,7 @@ public class GeneralPurposeOscillator {
     }
 
     public double square(double modulation) {
-        return Math.signum(Math.sin(phase() + modulation));
+        return Math.signum(sine(modulation));
     }
 
     public double triangle(double modulation) {
