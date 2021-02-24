@@ -18,7 +18,7 @@ This library imitates modules and patches used to create a modular synthesizer.
 
 
 ## Basics
-Combine the various modules on the [builtin](https://github.com/jbatistareis/bricks/tree/master/src/main/java/com/jbatista/bricks/components/builtin) package, connecting then [patches](https://github.com/jbatistareis/bricks/blob/master/src/main/java/com/jbatista/bricks/components/Patch.java), to build a synthesizer.
+Combine the various modules on the [builtin](https://github.com/jbatistareis/bricks/tree/master/src/main/java/com/jbatista/bricks/components/builtin) package, connecting then with [patches](https://github.com/jbatistareis/bricks/blob/master/src/main/java/com/jbatista/bricks/components/Patch.java), to build a synthesizer.
 
 
 ## Example  
