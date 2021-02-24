@@ -25,7 +25,7 @@ public class Oscillator extends CommonModule {
         inputs.add(new InputConnector("Freq.", "Receives a frequency to play"));
         inputs.add(new InputConnector("Lin. FM", "Linear frequency modulation"));
 
-        inputs.get(1).setOutputScaleCenter(1);
+        inputs.get(1).setScaleCenter(1);
 
         outputs.add(new OutputConnector("Freq.", "Returns the received frequency"));
         outputs.add(new OutputConnector("Wave", "Returns the resulting wave"));
@@ -45,17 +45,17 @@ public class Oscillator extends CommonModule {
         controllers.add(new Controller(
                 "Freq. ratio", "Inc./dec. input frequency",
                 0.1, 10, 0.1, 1, Controller.Curve.ORIGINAL,
-                inputs.get(0)::setOutputRatio));
+                inputs.get(0)::setRatio));
 
         controllers.add(new Controller(
                 "FM str.", "How much modulation is going to be applied",
                 0, 1, 0.01, 1, Controller.Curve.ORIGINAL,
-                inputs.get(1)::setOutputRatio));
+                inputs.get(1)::setRatio));
 
         controllers.add(new Controller(
                 "Out Vol.", "Sets the output volume",
                 0, 10, 0.01, 0.5, Controller.Curve.LINEAR,
-                outputs.get(1)::setOutputRatio));
+                outputs.get(1)::setRatio));
     }
 
     @Override

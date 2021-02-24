@@ -22,7 +22,7 @@ public class Mixer extends CommonModule {
             controllers.add(new Controller(
                     "Vol. " + (i + 1), "Sets the individual output volume",
                     0, 2, 0.01, 0.5, Controller.Curve.LINEAR,
-                    inputConnector::setOutputRatio));
+                    inputConnector::setRatio));
             inputs.add(inputConnector);
         }
 

@@ -8,14 +8,14 @@ class Connector {
     private final String name;
     private final String description;
 
-    protected final List<Patch> patches = new ArrayList<>();
+    protected final List<Patch> patches = new ArrayList<>(6);
     protected int patchesCount;
 
-    private double outputRatio = 1;
+    private double ratio = 1;
 
-    private double outputScaleCenter = 0;
+    private double scaleCenter = 0;
 
-    boolean connected = false;
+    boolean connected;
 
     public Connector(String name, String description) {
         this.name = name;
@@ -59,35 +59,32 @@ class Connector {
 
     public void write(double data) {
         for (int i = 0; i < patchesCount; i++)
-            patches.get(i).data = data * outputRatio + outputScaleCenter;
+            patches.get(i).data = data * ratio + scaleCenter;
     }
 
     public double read() {
-        double value = 0;
+        double value = patches.get(0).data;
 
-        if (patchesCount == 1)
-            value = patches.get(0).data * outputRatio + outputScaleCenter;
-        else
-            for (int i = 1; i < patchesCount; i++)
-                value += patches.get(i).data * outputRatio + outputScaleCenter;
+        for (int i = 1; i < patchesCount; i++)
+            value += patches.get(i).data;
 
-        return value;
+        return value * ratio + scaleCenter;
     }
 
-    public double getOutputRatio() {
-        return outputRatio;
+    public double getRatio() {
+        return ratio;
     }
 
-    public void setOutputRatio(double outputRatio) {
-        this.outputRatio = outputRatio;
+    public void setRatio(double ratio) {
+        this.ratio = ratio;
     }
 
-    public double getOutputScaleCenter() {
-        return outputScaleCenter;
+    public double getScaleCenter() {
+        return scaleCenter;
     }
 
-    public void setOutputScaleCenter(double outputScaleCenter) {
-        this.outputScaleCenter = Math.max(-2, Math.min(outputScaleCenter, 2));
+    public void setScaleCenter(double scaleCenter) {
+        this.scaleCenter = Math.max(-2, Math.min(scaleCenter, 2));
     }
 
     public boolean isConnected() {
