@@ -1,14 +1,15 @@
 package com.jbatista.bricks.components;
 
-public abstract class Connector {
+import java.util.ArrayList;
+import java.util.List;
+
+class Connector {
 
     private final String name;
     private final String description;
 
-    protected Patch inputPatch = null;
-    protected Patch outputPatch = null;
-
-    private double inputData = 0;
+    protected final List<Patch> patches = new ArrayList<>();
+    protected int patchesCount;
 
     private double outputRatio = 1;
 
@@ -19,6 +20,8 @@ public abstract class Connector {
     public Connector(String name, String description) {
         this.name = name;
         this.description = description;
+
+        disconnectAllPatches();
     }
 
     public String getName() {
@@ -29,22 +32,46 @@ public abstract class Connector {
         return description;
     }
 
-    public Patch getPatch() {
-        return (inputPatch != null) ? inputPatch : outputPatch;
+    public void connectPatch(Patch patch) {
+        if (!patches.contains(patch)) {
+            patches.add(patch);
+            connected = true;
+            patchesCount++;
+        }
     }
 
-    public abstract void connectPatch(Patch patch);
+    public void disconnectPatch(Patch patch) {
+        if (patches.remove(patch)) {
+            patchesCount--;
+            connected = !patches.isEmpty();
 
-    public abstract void disconnectPatch();
+            if (!connected)
+                patches.add(new Patch());
+        }
+    }
+
+    public void disconnectAllPatches() {
+        connected = false;
+        patches.clear();
+        patches.add(new Patch());
+        patchesCount = 1;
+    }
 
     public void write(double data) {
-        inputData = data;
-
-        if (inputPatch != null) inputPatch.passData();
+        for (int i = 0; i < patchesCount; i++)
+            patches.get(i).data = data * outputRatio + outputScaleCenter;
     }
 
     public double read() {
-        return inputData * outputRatio + outputScaleCenter;
+        double value = 0;
+
+        if (patchesCount == 1)
+            value = patches.get(0).data * outputRatio + outputScaleCenter;
+        else
+            for (int i = 1; i < patchesCount; i++)
+                value += patches.get(i).data * outputRatio + outputScaleCenter;
+
+        return value;
     }
 
     public double getOutputRatio() {

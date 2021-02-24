@@ -22,8 +22,8 @@ public abstract class CommonModule {
     }
 
     public void remove() {
-        inputs.forEach(input -> input.disconnectPatch());
-        outputs.forEach(output -> output.disconnectPatch());
+        inputs.forEach(input -> input.disconnectAllPatches());
+        outputs.forEach(output -> output.disconnectAllPatches());
         instrument.removeModule(this);
     }
 
