@@ -40,9 +40,9 @@ public class BandPass extends Biquad {
         cos = Math.cos(omega);
         alpha = sin / (2 * q);
 
-        cB0 = alpha;
+        cB0 = q * alpha;
         cB1 = 0;
-        cB2 = -alpha;
+        cB2 = -q * alpha;
         cA0 = 1 + alpha;
         cA1 = -2 * cos;
         cA2 = 1 - alpha;
