@@ -7,10 +7,9 @@ This library imitates modules and patches used to create a modular synthesizer.
 
 
 ## Features (for now)
-* Oscillators: sine, triangle, square, saw up, saw down, noise.
-* Filters: low-pass, high-pass, band-pass, delay.
+* Oscillators: sine, triangle, square, saw up, saw down, noise
+* Filters: low-pass, high-pass, band-pass, delay
 * LFO
-* Utilities: mixer, passthrough.
 
 
 ## Note
