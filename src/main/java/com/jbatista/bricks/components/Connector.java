@@ -58,8 +58,10 @@ class Connector {
     }
 
     public void write(double data) {
+        double value = data * ratio + scaleCenter;
+
         for (int i = 0; i < patchesCount; i++)
-            patches.get(i).data = data * ratio + scaleCenter;
+            patches.get(i).data = value;
     }
 
     public double read() {
