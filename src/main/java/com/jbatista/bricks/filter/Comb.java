@@ -16,8 +16,7 @@ public class Comb implements Filter {
     private double y;
     private int samples = 0;
     private final double[] bCoeffs = new double[20];
-    private final int[] delays = new int[20];
-    private final double[] buffer = new double[88200];
+    private final double[] buffer = new double[882000];
     private final int cursors[] = new int[21];
 
     public Comb() {
@@ -51,36 +50,32 @@ public class Comb implements Filter {
     public void setTaps(double taps) {
         this.taps = (int) Math.max(1, Math.min(taps, 20));
 
-        for (int i = 1; i <= this.taps; i++) {
-            bCoeffs[i] = 1 / (i + 0.2);
-            delays[i] = samples / this.taps / i;
-            cursors[i] = -delays[i];
+        for (int i = 0; i < this.taps; i++) {
+            bCoeffs[i] = 0.8 / (i + 0.3);
+            cursors[i] = samples * (this.taps - i);
         }
+
+        bCoeffs[0] = 0.8;
     }
 
     private void advanceCursor(int cursorIndex) {
-        if (cursors[cursorIndex] == 88199) {
+        if (cursors[cursorIndex] >= 881999)
             cursors[cursorIndex] = 0;
-        } else {
+        else
             cursors[cursorIndex] += 1;
-        }
     }
 
     @Override
     public double apply(double sample) {
         y = 0;
-
         buffer[cursors[0]] = sample;
-        advanceCursor(0);
 
-        for (int i = 1; i <= this.taps; i++) {
-            if (cursors[i] > 0) {
-                y += buffer[cursors[i]] * bCoeffs[1];
-            }
+        for (int i = 0; i < this.taps; i++) {
+            y += buffer[cursors[i]] * bCoeffs[i];
             advanceCursor(i);
         }
 
-        return y + sample;
+        return y;
     }
 
 }

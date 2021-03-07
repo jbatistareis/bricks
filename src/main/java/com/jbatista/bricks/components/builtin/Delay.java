@@ -14,7 +14,7 @@ public class Delay extends FilterModule {
 
         name = "Delay";
 
-        filter = new Comb();
+        filter = comb;
 
         controllers.add(new Controller(
                 "Duration", "Sets the duration for the effect",
