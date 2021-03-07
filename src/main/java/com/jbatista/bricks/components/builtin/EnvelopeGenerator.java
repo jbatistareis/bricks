@@ -38,8 +38,8 @@ public class EnvelopeGenerator extends CommonModule {
     private final double[] factor = new double[5];
     private final int[] size = new int[5];
 
-    private double previousInput;
     private double currentInput;
+    private double capturedInput;
     private boolean hold;
     private boolean released = false;
 
@@ -137,10 +137,10 @@ public class EnvelopeGenerator extends CommonModule {
             released = true;
         previousTrigger = currentTrigger;
 
-        currentInput = inputs.get(0).read();
-        if (hold && (currentInput == 0))
-            currentInput = previousInput;
-        previousInput = currentInput;
+        capturedInput = inputs.get(0).read();
+
+        if (!hold || (hold && (capturedInput != 0)))
+            currentInput = capturedInput;
 
         outputs.get(0).write(currentAmplitude * currentInput);
         advanceEnvelope();
