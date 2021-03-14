@@ -23,11 +23,9 @@ public class EnvelopeGenerator extends CommonModule {
         }
     }
 
-    private static final double[] LEVEL_TABLE = new double[200];
-    private static final double[] SPEED_TABLE = new double[200];
+    private static final double TABLE_STEP = 1d / 127;
 
-    private double currentTrigger;
-    private double previousTrigger;
+    private double trigger;
 
     private State state = State.IDLE;
     private double startAmplitude;
@@ -41,36 +39,19 @@ public class EnvelopeGenerator extends CommonModule {
     private double currentInput;
     private double capturedInput;
     private boolean hold;
-    private boolean released = false;
+    private boolean released = true;
 
-    private int attackLevel;
-    private int decayLevel;
-    private int sustainLevel;
-    private int releaseLevel;
-
-    private int attackSpeed;
-    private int decaySpeed;
-    private int sustainSpeed;
-    private int releaseSpeed;
-
-    private int currentAttackSpeed = -1;
-    private int currentDecaySpeed = -1;
-    private int currentSustainSpeed = -1;
-    private int currentReleaseSpeed = -1;
-
-    static {
-        double index = 0;
-        for (int i = 0; i < 200; i++) {
-            index += 0.005;
-            LEVEL_TABLE[i] = MathFunctions.smoothInterpolation(0, 1, index);
-            SPEED_TABLE[i] = MathFunctions.smoothInterpolation(2, 0, index);
-
-        }
-    }
+    private double attackLevel;
+    private double decayLevel;
+    private double sustainLevel;
+    private double releaseLevel;
 
     public EnvelopeGenerator(Instrument instrument) {
         super(instrument);
         name = "Envelope generator";
+
+        size[State.PRE_IDLE.getId()] = (int) (Instrument.SAMPLE_RATE / 120);
+        factor[State.PRE_IDLE.getId()] = 1d / size[State.PRE_IDLE.getId()];
 
         inputs.add(new InputConnector("In", "The sound signal that will receive AM"));
         inputs.add(new InputConnector("Trigger", "Start/stop signal"));
@@ -79,99 +60,81 @@ public class EnvelopeGenerator extends CommonModule {
 
         controllers.add(new Controller(
                 "Atk. Lvl.", "Attack amplitude level",
-                0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setAttackLevel));
+                0, 127, 0.01, 1, Controller.Curve.LINEAR,
+                value -> attackLevel = calcLevel(value)));
 
         controllers.add(new Controller(
                 "Dec. Lvl.", "Decay amplitude level",
-                0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setDecayLevel));
+                0, 127, 0.01, 1, Controller.Curve.LINEAR,
+                value -> decayLevel = calcLevel(value)));
 
         controllers.add(new Controller(
                 "Sus. Lvl.", "Sustain amplitude level",
-                0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setSustainLevel));
+                0, 127, 0.01, 1, Controller.Curve.LINEAR,
+                value -> sustainLevel = calcLevel(value)));
 
         controllers.add(new Controller(
                 "Rel. Lvl.", "Release amplitude level",
-                0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setReleaseLevel));
+                0, 127, 0.01, 1, Controller.Curve.LINEAR,
+                value -> releaseLevel = calcLevel(value)));
 
 
         controllers.add(new Controller(
                 "Atk. Spd.", "Attack speed",
-                0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setAttackSpeed));
+                0, 127, 0.01, 1, Controller.Curve.LINEAR,
+                value -> changeParameters(State.ATTACK, value)));
 
         controllers.add(new Controller(
                 "Dec. Spd.", "Decay speed",
-                0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setDecaySpeed));
+                0, 127, 0.01, 1, Controller.Curve.LINEAR,
+                value -> changeParameters(State.DECAY, value)));
 
         controllers.add(new Controller(
                 "Sus. Spd.", "Sustain speed",
-                0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setSustainSpeed));
+                0, 127, 0.01, 1, Controller.Curve.LINEAR,
+                value -> changeParameters(State.SUSTAIN, value)));
 
         controllers.add(new Controller(
                 "Rel. Spd.", "Release speed",
-                0, 199, 0.01, 1, Controller.Curve.LINEAR,
-                this::setReleaseSpeed));
+                0, 127, 0.01, 1, Controller.Curve.LINEAR,
+                value -> changeParameters(State.RELEASE, value)));
 
         controllers.add(new Controller(
                 "Hold input", "Holds input values that are different from 0",
                 0, 1, 1, 0, Controller.Curve.ORIGINAL,
                 value -> hold = (value == 1),
                 0, 1));
-
-        size[State.PRE_IDLE.getId()] = (int) (Instrument.SAMPLE_RATE / 120);
-        factor[State.PRE_IDLE.getId()] = 1d / size[State.PRE_IDLE.getId()];
     }
 
     @Override
     public void process() {
-        currentTrigger = inputs.get(1).read();
-        if ((currentTrigger > 0) && (currentTrigger != previousTrigger))
-            initialize();
-        else if ((currentTrigger == 0) && (currentTrigger != previousTrigger))
-            released = true;
-        previousTrigger = currentTrigger;
-
         capturedInput = inputs.get(0).read();
+        trigger = inputs.get(1).read();
 
-        if (!hold || (hold && (capturedInput != 0)))
+        if (released && (trigger > 0)) {
+            released = false;
+            initialize();
+        } else if (!released && (trigger == 0)) {
+            released = true;
+        }
+
+        if (!hold || (hold && (trigger > 0)))
             currentInput = capturedInput;
 
         outputs.get(0).write(currentAmplitude * currentInput);
         advanceEnvelope();
     }
 
-    private void checkParameters() {
-        if (currentAttackSpeed != attackSpeed) {
-            changeParameters(State.ATTACK, attackSpeed);
-            currentAttackSpeed = attackSpeed;
-        }
-
-        if (currentDecaySpeed != decaySpeed) {
-            changeParameters(State.DECAY, decaySpeed);
-            currentDecaySpeed = decaySpeed;
-        }
-
-        if (currentSustainSpeed != sustainSpeed) {
-            changeParameters(State.SUSTAIN, sustainSpeed);
-            currentSustainSpeed = sustainSpeed;
-        }
-
-        if (currentReleaseSpeed != releaseSpeed) {
-            changeParameters(State.RELEASE, releaseSpeed);
-            currentReleaseSpeed = releaseSpeed;
-        }
+    private static double calcLevel(double position) {
+        return MathFunctions.smoothInterpolation(0, 1, TABLE_STEP * position);
     }
 
-    private void changeParameters(State state, int speed) {
-        size[state.getId()] = (int) Math.max(
-                size[State.PRE_IDLE.getId()],
-                SPEED_TABLE[speed] * Instrument.SAMPLE_RATE);
+    private static double calcSpeed(double position) {
+        return MathFunctions.smoothInterpolation(2, 0, TABLE_STEP * position);
+    }
+
+    private void changeParameters(State state, double speed) {
+        size[state.getId()] = (int) Math.max(size[State.PRE_IDLE.getId()], calcSpeed(speed) * Instrument.SAMPLE_RATE);
         factor[state.getId()] = 1d / size[state.getId()];
     }
 
@@ -182,8 +145,8 @@ public class EnvelopeGenerator extends CommonModule {
                     position = 0;
                     progress = 0;
 
-                    startAmplitude = LEVEL_TABLE[attackLevel];
-                    endAmplitude = LEVEL_TABLE[decayLevel];
+                    startAmplitude = attackLevel;
+                    endAmplitude = decayLevel;
 
                     state = State.DECAY;
                 }
@@ -194,11 +157,13 @@ public class EnvelopeGenerator extends CommonModule {
                     position = 0;
                     progress = 0;
 
-                    startAmplitude = LEVEL_TABLE[decayLevel];
-                    endAmplitude = LEVEL_TABLE[sustainLevel];
+                    startAmplitude = decayLevel;
+                    endAmplitude = sustainLevel;
 
-                    if (released) release();
-                    else state = State.SUSTAIN;
+                    if (released)
+                        release();
+                    else
+                        state = State.SUSTAIN;
                 }
                 break;
 
@@ -206,15 +171,16 @@ public class EnvelopeGenerator extends CommonModule {
                 if (released) {
                     release();
                     return;
-                } else if (applyEnvelope(State.SUSTAIN)) state = State.HOLD;
+                } else if (applyEnvelope(State.SUSTAIN))
+                    state = State.HOLD;
                 break;
 
             case HOLD:
-                if (released) release();
-                break;
+                if (released)
+                    release();
+                return;
 
             case RELEASE:
-                released = false;
                 if (applyEnvelope(State.RELEASE)) silence();
                 break;
 
@@ -242,88 +208,46 @@ public class EnvelopeGenerator extends CommonModule {
         return true;
     }
 
-    private void release() {
-        if (state != State.RELEASE) {
-            position = 0;
-            progress = 0;
-
-            startAmplitude = currentAmplitude;
-            endAmplitude = LEVEL_TABLE[releaseLevel];
-
-            state = State.RELEASE;
-        }
-    }
-
-    private void reset() {
-        if (state != State.IDLE) {
-            position = 0;
-            progress = 0;
-
-            startAmplitude = 0;
-            endAmplitude = 0;
-            currentAmplitude = 0;
-
-            state = State.IDLE;
-        }
-    }
-
-    private void silence() {
-        if (state != State.PRE_IDLE) {
-            position = 0;
-            progress = 0;
-
-            startAmplitude = currentAmplitude;
-            endAmplitude = 0;
-
-            state = State.PRE_IDLE;
-        }
-    }
-
     private void initialize() {
-        checkParameters();
-
         position = 0;
         progress = 0;
 
         startAmplitude = 0;
         currentAmplitude = 0;
-        endAmplitude = LEVEL_TABLE[attackLevel];
+        endAmplitude = attackLevel;
 
         state = State.ATTACK;
     }
 
+    private void release() {
+        position = 0;
+        progress = 0;
 
-    public void setAttackLevel(double attackLevel) {
-        this.attackLevel = (int) attackLevel;
+        startAmplitude = currentAmplitude;
+        endAmplitude = releaseLevel;
+
+        state = State.RELEASE;
     }
 
-    public void setDecayLevel(double decayLevel) {
-        this.decayLevel = (int) decayLevel;
+    private void silence() {
+        position = 0;
+        progress = 0;
+
+        startAmplitude = currentAmplitude;
+        endAmplitude = 0;
+
+        state = State.PRE_IDLE;
     }
 
-    public void setSustainLevel(double sustainLevel) {
-        this.sustainLevel = (int) sustainLevel;
-    }
+    private void reset() {
+        position = 0;
+        progress = 0;
 
-    public void setReleaseLevel(double releaseLevel) {
-        this.releaseLevel = (int) releaseLevel;
-    }
+        startAmplitude = 0;
+        endAmplitude = 0;
+        currentAmplitude = 0;
 
-
-    public void setAttackSpeed(double attackSpeed) {
-        this.attackSpeed = (int) attackSpeed;
-    }
-
-    public void setDecaySpeed(double decaySpeed) {
-        this.decaySpeed = (int) decaySpeed;
-    }
-
-    public void setSustainSpeed(double sustainSpeed) {
-        this.sustainSpeed = (int) sustainSpeed;
-    }
-
-    public void setReleaseSpeed(double releaseSpeed) {
-        this.releaseSpeed = (int) releaseSpeed;
+        state = State.IDLE;
     }
 
 }
