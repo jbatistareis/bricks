@@ -3,10 +3,9 @@ package com.jbatista.bricks.util;
 public class GeneralPurposeOscillator {
 
     private double sampleRate = 1;
-    private double frequency = 1;
-    private double period = 1;
-
-    private int periodAccumulator = 0;
+    private double frequency;
+    private double increment;
+    private double phase;
 
     public GeneralPurposeOscillator() {
         setFrequency(1);
@@ -26,12 +25,7 @@ public class GeneralPurposeOscillator {
 
     public void setFrequency(double frequency) {
         this.frequency = frequency;
-        period = this.frequency / sampleRate;
-        reset();
-    }
-
-    public void reset() {
-        periodAccumulator = 0;
+        increment = 1 / (sampleRate / this.frequency);
     }
 
     public double sine(double modulation) {
@@ -59,7 +53,8 @@ public class GeneralPurposeOscillator {
     }
 
     private double phase() {
-        return MathFunctions.TAU * period * periodAccumulator++;
+        phase = (phase + increment) % 1.0;
+        return phase * MathFunctions.TAU;
     }
 
 }
