@@ -58,13 +58,6 @@ public class Comb implements Filter {
         bCoeffs[0] = 0.8;
     }
 
-    private void advanceCursor(int cursorIndex) {
-        if (cursors[cursorIndex] >= 881999)
-            cursors[cursorIndex] = 0;
-        else
-            cursors[cursorIndex] += 1;
-    }
-
     @Override
     public double apply(double sample) {
         y = 0;
@@ -72,7 +65,7 @@ public class Comb implements Filter {
 
         for (int i = 0; i < this.taps; i++) {
             y += buffer[cursors[i]] * bCoeffs[i];
-            advanceCursor(i);
+            cursors[i] = (cursors[i] + 1) % 881999;
         }
 
         return y;
